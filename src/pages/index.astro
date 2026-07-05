@@ -1,0 +1,149 @@
+---
+import Base from '../layouts/Base.astro';
+
+const GITHUB_URL = 'https://github.com/23aneessss';
+---
+
+<Base>
+  <header class="header">
+    <h1 class="name">Aness Bouziani</h1>
+    <p class="role">Full-Stack and Mobile Developer</p>
+  </header>
+
+  <main class="scene">
+    <a class="item item--macbook" href="/stack" data-object="macbook">
+      <canvas></canvas>
+      <span class="label">Tech Stack</span>
+    </a>
+
+    <a class="item item--avatar" href="/about">
+      <img class="avatar" src="/avatar-placeholder.png" alt="Aness Bouziani" />
+      <span class="label">About</span>
+    </a>
+
+    <a class="item item--iphone" href="/contact" data-object="iphone">
+      <canvas></canvas>
+      <span class="label">Contact</span>
+    </a>
+
+    <a class="item item--folder" href="/work" data-object="folder">
+      <canvas></canvas>
+      <span class="label">Work</span>
+    </a>
+
+    <a class="item item--coffee" href={GITHUB_URL} target="_blank" rel="noopener" data-object="coffee">
+      <canvas></canvas>
+      <span class="label">GitHub</span>
+    </a>
+  </main>
+</Base>
+
+<script>
+  import { mountObject, type ObjectKind } from '../scripts/object-viewer';
+
+  for (const el of document.querySelectorAll<HTMLAnchorElement>('[data-object]')) {
+    const canvas = el.querySelector('canvas');
+    if (canvas) mountObject(canvas, el.dataset.object as ObjectKind, el);
+  }
+</script>
+
+<style>
+  .header {
+    padding: 34px 48px 0;
+    border-top: 1px solid #ececec;
+  }
+  .name,
+  .role {
+    margin: 0;
+    font-size: clamp(2rem, 4.5vw, 3.3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  .role {
+    color: #bcbcbc;
+  }
+
+  .scene {
+    display: grid;
+    grid-template-areas:
+      'macbook avatar iphone'
+      'folder avatar coffee';
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    justify-items: center;
+    flex: 1;
+    width: 100%;
+    max-width: 1080px;
+    margin-inline: auto;
+    padding: 2vh 6vw 4vh;
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+  }
+  .item canvas {
+    width: 150px;
+    height: 150px;
+  }
+
+  .item--macbook { grid-area: macbook; transform: translateY(-8%); }
+  .item--iphone { grid-area: iphone; transform: translateY(-2%); }
+  .item--folder { grid-area: folder; transform: translateY(12%); }
+  .item--coffee { grid-area: coffee; transform: translateY(6%); }
+
+  .item--avatar {
+    grid-area: avatar;
+    gap: 12px;
+  }
+  .avatar {
+    height: min(58vh, 620px);
+    transition: transform 0.35s ease;
+  }
+  .item--avatar:hover .avatar {
+    transform: scale(1.04) rotate(-1.2deg);
+  }
+
+  .label {
+    font-size: 15px;
+    color: #9a9a9a;
+    transition: color 0.25s ease;
+  }
+  .item:hover .label {
+    color: #333;
+  }
+
+  @media (max-width: 760px) {
+    .header {
+      padding: 24px 24px 0;
+    }
+    .scene {
+      grid-template-areas:
+        'avatar avatar'
+        'macbook iphone'
+        'folder coffee';
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      row-gap: 24px;
+      padding: 4vh 4vw 8vh;
+    }
+    .item--macbook,
+    .item--iphone,
+    .item--folder,
+    .item--coffee {
+      transform: none;
+    }
+    .item canvas {
+      width: 120px;
+      height: 120px;
+    }
+    .avatar {
+      height: 44vw;
+    }
+  }
+</style>
