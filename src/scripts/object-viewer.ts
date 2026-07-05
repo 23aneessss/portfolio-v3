@@ -183,9 +183,15 @@ export function mountObject(canvas: HTMLCanvasElement, kind: ObjectKind, hoverTa
     scene.add(group);
     const [rx, ry, rz] = cfg.pose;
 
+    // bottom-align every object to a common baseline so labels sit at a
+    // consistent distance regardless of the object's height
+    group.rotation.set(rx, ry, rz);
+    const bb = new THREE.Box3().setFromObject(group);
+    const baseY = -0.78 - bb.min.y;
+    group.position.y = baseY;
+
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reducedMotion) {
-      group.rotation.set(rx, ry, rz);
       renderer.render(scene, camera);
       return;
     }
@@ -209,7 +215,7 @@ export function mountObject(canvas: HTMLCanvasElement, kind: ObjectKind, hoverTa
       lift += (targetLift - lift) * Math.min(dt * 6, 1);
       angle += spin * dt;
       group.rotation.set(rx, angle, rz);
-      group.position.y = Math.sin(now / 1000 * 1.5 + t0) * BOB + lift;
+      group.position.y = baseY + Math.sin(now / 1000 * 1.5 + t0) * BOB + lift;
       renderer.render(scene, camera);
       requestAnimationFrame(tick);
     }
