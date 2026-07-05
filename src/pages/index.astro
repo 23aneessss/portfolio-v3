@@ -17,7 +17,10 @@ const GITHUB_URL = 'https://github.com/23aneessss';
     </a>
 
     <a class="item item--avatar" href="/about">
-      <img class="avatar" src="/avatar-placeholder.png" alt="Aness Bouziani" />
+      <span class="avatar-wrap">
+        <img class="avatar" src="/avatar.png" alt="Aness Bouziani" />
+        <img class="avatar avatar--smile" src="/avatar-smile.png" alt="" aria-hidden="true" />
+      </span>
       <span class="label">About</span>
     </a>
 
@@ -101,12 +104,28 @@ const GITHUB_URL = 'https://github.com/23aneessss';
     grid-area: avatar;
     gap: 12px;
   }
-  .avatar {
-    height: min(58vh, 620px);
+  .avatar-wrap {
+    position: relative;
+    display: block;
     transition: transform 0.35s ease;
   }
-  .item--avatar:hover .avatar {
+  .avatar {
+    display: block;
+    height: min(58vh, 620px);
+  }
+  .avatar--smile {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .item--avatar:hover .avatar-wrap {
     transform: scale(1.04) rotate(-1.2deg);
+  }
+  .item--avatar:hover .avatar--smile {
+    opacity: 1;
   }
 
   .label {
