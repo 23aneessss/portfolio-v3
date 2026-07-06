@@ -21,8 +21,11 @@ export interface StationDef {
 }
 
 const CHIP = 62; // icon card square, px
-const FLOAT_MS = 10_000;
+const SLOT_W = CHIP + 14; // horizontal spacing between line slots
+const POP_MS = 140; // delay between pops in a burst
+const FLOAT_MS = 10_000; // how long each icon holds the line before falling
 const DROP_MARGIN = 30; // px around the folder that still counts as "home"
+const SPRING = 0.00004; // steering strength toward the line slot
 
 interface Chip {
   el: HTMLDivElement;
@@ -30,6 +33,8 @@ interface Chip {
   station: StationDef;
   floatUntil: number;
   phase: number; // desyncs the drift wobble
+  /** slot in the floating line the icon steers toward */
+  target: { x: number; y: number };
 }
 
 function makeChipEl(item: StackItem): HTMLDivElement {
@@ -108,33 +113,44 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
   const burst = (st: StationDef) => {
     const pending = home.get(st)!;
     if (!pending.length) return;
+    const batch = pending.splice(0);
     const rr = rootRect();
     const fr = stationRect(st);
-    const cx = fr.left - rr.left + fr.width / 2;
-    const cy = fr.top - rr.top + fr.height / 3;
-    pending.splice(0).forEach((item, i) => {
-      const el = makeChipEl(item);
-      el.style.transform = `translate(${cx - CHIP / 2}px, ${cy - CHIP / 2}px)`;
-      root.appendChild(el);
-      const body = Matter.Bodies.rectangle(cx, cy, CHIP, CHIP, {
-        chamfer: { radius: 16 },
-        restitution: 0.4,
-        friction: 0.15,
-        frictionAir: 0.02,
-      });
-      Matter.Body.setVelocity(body, {
-        x: (Math.random() - 0.5) * 11,
-        y: -(7 + Math.random() * 5),
-      });
-      Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.25);
-      Matter.World.add(world, body);
-      chips.add({
-        el,
-        body,
-        station: st,
-        floatUntil: performance.now() + FLOAT_MS + i * 250,
-        phase: Math.random() * Math.PI * 2,
-      });
+    // pop from the folder mouth…
+    const mx = fr.left - rr.left + fr.width / 2;
+    const my = fr.top - rr.top + fr.height / 3;
+    // …into a horizontal line starting right of the folder, at folder height;
+    // overflow wraps to an extra line just above
+    const startX = fr.right - rr.left + 34 + CHIP / 2;
+    const rowY = fr.top - rr.top + fr.height / 2 - 16;
+    const perRow = Math.max(1, Math.floor((root.clientWidth - startX - 24) / SLOT_W));
+
+    batch.forEach((item, i) => {
+      window.setTimeout(() => {
+        const el = makeChipEl(item);
+        el.style.transform = `translate(${mx - CHIP / 2}px, ${my - CHIP / 2}px)`;
+        root.appendChild(el);
+        const body = Matter.Bodies.rectangle(mx, my, CHIP, CHIP, {
+          chamfer: { radius: 16 },
+          restitution: 0.4,
+          friction: 0.15,
+          frictionAir: 0.09, // damped while it travels to / holds the line
+        });
+        Matter.Body.setVelocity(body, { x: 2, y: -5 });
+        Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1);
+        Matter.World.add(world, body);
+        chips.add({
+          el,
+          body,
+          station: st,
+          floatUntil: performance.now() + FLOAT_MS,
+          phase: Math.random() * Math.PI * 2,
+          target: {
+            x: startX + (i % perRow) * SLOT_W,
+            y: rowY - Math.floor(i / perRow) * (CHIP + 16),
+          },
+        });
+      }, i * POP_MS);
     });
     st.el.dispatchEvent(new CustomEvent('stack:burst', { bubbles: true }));
   };
@@ -147,16 +163,24 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
     });
   }
 
-  // anti-gravity + gentle drift while an icon is still in its float window
+  // while an icon is in its float window: cancel gravity and steer it toward
+  // its slot in the line (with a soft bob); when the window ends, restore
+  // normal air friction and let gravity take it
   Matter.Events.on(engine, 'beforeUpdate', () => {
     const now = performance.now();
     for (const c of chips) {
       if (now < c.floatUntil) {
-        const drift = Math.sin(now / 900 + c.phase) * 0.12;
+        const g = gravityForceY() * c.body.mass;
+        const dx = c.target.x - c.body.position.x;
+        const dy = c.target.y + Math.sin(now / 800 + c.phase) * 6 - c.body.position.y;
         Matter.Body.applyForce(c.body, c.body.position, {
-          x: drift * gravityForceY() * c.body.mass,
-          y: -gravityForceY() * c.body.mass * (1 + Math.sin(now / 700 + c.phase) * 0.25),
+          x: dx * SPRING * c.body.mass,
+          y: -g + dy * SPRING * c.body.mass,
         });
+        // keep the card readable while it holds the line
+        Matter.Body.setAngularVelocity(c.body, c.body.angularVelocity * 0.9 - c.body.angle * 0.03);
+      } else if (c.body.frictionAir > 0.03) {
+        c.body.frictionAir = 0.02;
       }
     }
   });
