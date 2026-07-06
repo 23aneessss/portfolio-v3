@@ -159,14 +159,17 @@ const BOB = 0.06;
 /** Mount a floating, rotating object into a canvas. Hover (on `hoverTarget`,
  *  default the canvas's parent link) spins it faster and lifts it.
  *  `opts.recolor` overrides the model's material color (used by the stack page
- *  to render the folder in several colors). */
+ *  to render the folder in several colors).
+ *  `opts.fit` (< 1) shrinks the object within the frame so no corner leaves
+ *  the camera view while it spins — use with a bigger canvas to keep size. */
 export function mountObject(
   canvas: HTMLCanvasElement,
   kind: ObjectKind,
   hoverTarget?: HTMLElement,
-  opts?: { recolor?: number }
+  opts?: { recolor?: number; fit?: number }
 ): void {
   const cfg = OBJECTS[kind];
+  const fit = opts?.fit ?? 1;
   const sizePx = canvas.clientWidth || 220;
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
@@ -186,15 +189,16 @@ export function mountObject(
   camera.lookAt(0, 0, 0);
 
   const ready = (model: THREE.Object3D) => {
-    const group = frameModel(model, cfg.size);
+    const group = frameModel(model, cfg.size * fit);
     scene.add(group);
     const [rx, ry, rz] = cfg.pose;
 
     // bottom-align every object to a common baseline so labels sit at a
-    // consistent distance regardless of the object's height
+    // consistent distance regardless of the object's height (the baseline
+    // rises with `fit` so the front-bottom corner clears the frustum)
     group.rotation.set(rx, ry, rz);
     const bb = new THREE.Box3().setFromObject(group);
-    const baseY = -0.78 - bb.min.y;
+    const baseY = -0.78 * fit - bb.min.y;
     group.position.y = baseY;
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

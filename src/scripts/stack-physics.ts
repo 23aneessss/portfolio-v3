@@ -26,6 +26,7 @@ const POP_MS = 140; // delay between pops in a burst
 const FLOAT_MS = 10_000; // how long each icon holds the line before falling
 const DROP_MARGIN = 30; // px around the folder that still counts as "home"
 const SPRING = 0.00004; // steering strength toward the line slot
+const REBURST_COOLDOWN = 900; // ms after re-homing before hover can burst again
 
 interface Chip {
   el: HTMLDivElement;
@@ -110,7 +111,14 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
 
   const rootRect = () => root.getBoundingClientRect();
 
+  // dropping a chip back removes it from under the cursor, which makes the
+  // pointer "enter" the folder and would immediately burst it back out —
+  // a short cooldown (and no bursts mid-drag) keeps returned items inside
+  const cooldownUntil = new Map<StationDef, number>();
+  let dragging = false;
+
   const burst = (st: StationDef) => {
+    if (dragging || performance.now() < (cooldownUntil.get(st) ?? 0)) return;
     const pending = home.get(st)!;
     if (!pending.length) return;
     const batch = pending.splice(0);
@@ -215,14 +223,17 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
   Matter.Events.on(mouseConstraint, 'startdrag', (ev) => {
     const c = chipByBody((ev as unknown as { body: Matter.Body }).body);
     if (c) c.el.classList.add('dragging');
+    dragging = true;
   });
 
   Matter.Events.on(mouseConstraint, 'enddrag', (ev) => {
+    dragging = false;
     const c = chipByBody((ev as unknown as { body: Matter.Body }).body);
     if (!c) return;
     c.el.classList.remove('dragging');
     c.station.el.classList.remove('drop-ready');
     if (overHome(c)) {
+      cooldownUntil.set(c.station, performance.now() + REBURST_COOLDOWN);
       // put it back home
       chips.delete(c);
       Matter.World.remove(world, c.body);
