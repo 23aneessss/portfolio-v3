@@ -328,15 +328,16 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     --r: 16.4cqw; /* outer corner radius */
     position: relative;
     container-type: inline-size;
-    width: clamp(300px, 44vh, 410px);
+    width: clamp(290px, 41vh, 385px);
     aspect-ratio: 9 / 19.2;
-    /* clean black frame */
+    /* clean black frame — NOTE: cqw only works on descendants, so the
+       frame itself uses % / px (percent radius: x is %width, y is %height) */
     background: #050506;
-    border-radius: 16.4cqw;
-    padding: 1.1cqw;
+    border-radius: 17.5% / 8.2%;
+    padding: 4px;
     box-shadow:
-      0 40px 90px rgba(0, 0, 0, 0.35),
-      0 6px 22px rgba(0, 0, 0, 0.22);
+      0 30px 70px rgba(0, 0, 0, 0.28),
+      0 4px 16px rgba(0, 0, 0, 0.18);
     transition: transform 0.25s ease;
     transform-style: preserve-3d;
     animation: arrive 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -361,10 +362,10 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     background: #1c1d20;
     border-radius: 2px;
   }
-  .side-action { left: -0.8cqw; top: 17.5%; width: 0.9cqw; height: 3.6%; }
-  .side-vol1 { left: -0.8cqw; top: 24.5%; width: 0.9cqw; height: 5.6%; }
-  .side-vol2 { left: -0.8cqw; top: 31.5%; width: 0.9cqw; height: 5.6%; }
-  .side-power { right: -0.8cqw; top: 27%; width: 0.9cqw; height: 8.6%; }
+  .side-action { left: -3px; top: 17.5%; width: 3px; height: 3.6%; }
+  .side-vol1 { left: -3px; top: 24.5%; width: 3px; height: 5.6%; }
+  .side-vol2 { left: -3px; top: 31.5%; width: 3px; height: 5.6%; }
+  .side-power { right: -3px; top: 27%; width: 3px; height: 8.6%; }
 
   .screen {
     position: relative;
