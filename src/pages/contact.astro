@@ -336,11 +336,9 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     background: #050506;
     border-radius: 17.5% / 8.2%;
     padding: 4px;
-    box-shadow:
-      0 30px 70px rgba(0, 0, 0, 0.28),
-      0 4px 16px rgba(0, 0, 0, 0.18);
+    /* no box-shadow: blurred shadows on a 3D-tilted layer can paint as an
+       opaque black blob behind the phone in Safari — keep it clean */
     transition: transform 0.25s ease;
-    transform-style: preserve-3d;
     animation: arrive 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   @keyframes arrive {
