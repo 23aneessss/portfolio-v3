@@ -248,6 +248,7 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     'click',
     (e) => {
       if (!screen.classList.contains('jiggle')) return;
+      if ((e.target as HTMLElement).closest('.done-pill')) return; // let Done work
       const badge = (e.target as HTMLElement).closest('.badge');
       const app = (e.target as HTMLElement).closest<HTMLElement>('.app');
       e.preventDefault();
