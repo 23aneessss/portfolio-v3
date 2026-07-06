@@ -1,24 +1,868 @@
 ---
 import Base from '../layouts/Base.astro';
+
+// ── EDIT ME: real handles / number ─────────────────────────────
+const LINKS = {
+  gmail: 'mailto:oa_bouziani@esi.dz',
+  github: 'https://github.com/23aneessss',
+  linkedin: 'https://www.linkedin.com/in/YOUR_HANDLE', // EDIT
+  instagram: 'https://www.instagram.com/YOUR_HANDLE', // EDIT
+  facebook: 'https://www.facebook.com/YOUR_HANDLE', // EDIT
+  whatsapp: 'https://wa.me/213XXXXXXXXX', // EDIT
+  phone: 'tel:+213XXXXXXXXX', // EDIT
+};
+// ───────────────────────────────────────────────────────────────
+
+const si = (slug: string, color = 'ffffff') => `https://cdn.simpleicons.org/${slug}/${color}`;
+
+const PHONE_SVG = `<svg viewBox="0 0 24 24" fill="#fff"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>`;
+const CAMERA_SVG = `<svg viewBox="0 0 24 24" fill="#3c3f45"><path d="M9.4 4l-1.2 1.6H5a2 2 0 0 0-2 2V18a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7.6a2 2 0 0 0-2-2h-3.2L14.6 4H9.4zM12 17.2a4.2 4.2 0 1 1 0-8.4 4.2 4.2 0 0 1 0 8.4zm0-1.6a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2z"/></svg>`;
+const GEAR_SVG = `<svg viewBox="0 0 24 24" fill="#63676e"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.73 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>`;
+const SAFARI_SVG = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.4" fill="#3693f3"/><circle cx="12" cy="12" r="9.2" fill="#fff"/><circle cx="12" cy="12" r="8.4" fill="#3693f3"/><polygon points="13.8,13.8 7,17 10.2,10.2" fill="#fff"/><polygon points="17,7 13.8,13.8 10.2,10.2" fill="#ff3b30"/></svg>`;
+const PIN_SVG = `<svg viewBox="0 0 24 24" fill="#fc574e"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>`;
+const MUSIC_SVG = `<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>`;
+
+interface App {
+  name: string;
+  cls: string;
+  glyph: string;
+  href?: string; // clickable → real contact link
+  msg?: string; // decorative → funny banner message
+}
+
+const GRID: App[] = [
+  {
+    name: 'Calendar',
+    cls: 'tile-cal',
+    glyph: `<span class="cal-dow" id="cal-dow">MON</span><span class="cal-day" id="cal-day">1</span>`,
+    msg: 'my calendar is wide open — book me 😌',
+  },
+  {
+    name: 'Clock',
+    cls: 'tile-clock',
+    glyph: `<span class="clockface"><i class="hand h-hour" id="h-hour"></i><i class="hand h-min" id="h-min"></i><i class="hand h-sec" id="h-sec"></i></span>`,
+    msg: "it's always a good time to say hi ⏰",
+  },
+  {
+    name: 'Photos',
+    cls: 'tile-photos',
+    glyph: `<span class="photos-flower"></span>`,
+    msg: 'mostly screenshots of terminal output 🖼️',
+  },
+  {
+    name: 'Camera',
+    cls: 'tile-camera',
+    glyph: CAMERA_SVG,
+    msg: 'say cheese… nope, nothing here 📸',
+  },
+  {
+    name: 'Instagram',
+    cls: 'tile-instagram',
+    glyph: `<img src="${si('instagram')}" alt="" loading="lazy" />`,
+    href: LINKS.instagram,
+  },
+  {
+    name: 'Facebook',
+    cls: 'tile-facebook',
+    glyph: `<img src="${si('facebook')}" alt="" loading="lazy" />`,
+    href: LINKS.facebook,
+  },
+  {
+    name: 'WhatsApp',
+    cls: 'tile-whatsapp',
+    glyph: `<img src="${si('whatsapp')}" alt="" loading="lazy" />`,
+    href: LINKS.whatsapp,
+  },
+  {
+    name: 'Safari',
+    cls: 'tile-safari',
+    glyph: SAFARI_SVG,
+    msg: "you're already on the best website 😎",
+  },
+  {
+    name: 'Notes',
+    cls: 'tile-notes',
+    glyph: `<span class="notes-paper"><i></i><i></i><i></i></span>`,
+    msg: 'TODO: reply to Aness ✏️',
+  },
+  {
+    name: 'Calculator',
+    cls: 'tile-calc',
+    glyph: `<span class="calc-grid"><i></i><i></i><i class="op"></i><i></i><i></i><i class="op"></i></span>`,
+    msg: 'you + me = 🤝 (the math checks out)',
+  },
+  {
+    name: 'Maps',
+    cls: 'tile-maps',
+    glyph: PIN_SVG,
+    msg: '📍 Algiers, Algeria — remote-friendly',
+  },
+  {
+    name: 'Music',
+    cls: 'tile-music',
+    glyph: MUSIC_SVG,
+    msg: 'lo-fi beats to debug to 🎧',
+  },
+];
+
+const DOCK: App[] = [
+  { name: 'Phone', cls: 'tile-phone', glyph: PHONE_SVG, href: LINKS.phone },
+  { name: 'Gmail', cls: 'tile-gmail', glyph: `<img src="${si('gmail', 'EA4335')}" alt="" loading="lazy" />`, href: LINKS.gmail },
+  { name: 'GitHub', cls: 'tile-github', glyph: `<img src="${si('github')}" alt="" loading="lazy" />`, href: LINKS.github },
+  { name: 'LinkedIn', cls: 'tile-linkedin', glyph: `<span class="in-mark">in</span>`, href: LINKS.linkedin },
+];
+
+const external = (href?: string) => !!href && !href.startsWith('mailto:') && !href.startsWith('tel:');
 ---
 
-<Base title="Contact — Aness Bouziani">
-  <main class="placeholder">
-    <h1>Contact</h1>
-    <p>Coming soon.</p>
-    <a href="/">← Back</a>
+<Base title="Contact — Aness Bouziani" description="Get in touch with Aness Bouziani — pick an app.">
+  <header class="header">
+    <a class="back" href="/">←</a>
+    <div>
+      <h1 class="title">Contact</h1>
+      <p class="hint">It's a real phone. The apps actually work — tap one. (Long-press for a surprise.)</p>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <div class="iphone" id="iphone">
+      <span class="side-btn side-action"></span>
+      <span class="side-btn side-vol1"></span>
+      <span class="side-btn side-vol2"></span>
+      <span class="side-btn side-power"></span>
+
+      <div class="screen" id="screen">
+        <div class="island"></div>
+
+        <div class="statusbar">
+          <span class="sb-time" id="sb-time">9:41</span>
+          <span class="sb-right">
+            <svg class="sb-signal" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0.5" width="3" height="11.5" rx="1"/></svg>
+            <svg class="sb-wifi" viewBox="0 0 16 12" fill="currentColor"><path d="M8 9.6a1.7 1.7 0 0 1 1.7 1.7L8 12l-1.7-.7A1.7 1.7 0 0 1 8 9.6zM8 5.5c1.7 0 3.2.6 4.4 1.7l-1.4 1.5A4.4 4.4 0 0 0 8 7.6c-1.1 0-2.2.4-3 1.1L3.6 7.2A6.5 6.5 0 0 1 8 5.5zM8 1.4c2.8 0 5.4 1.1 7.3 2.9L13.9 5.7A8.5 8.5 0 0 0 8 3.5c-2.3 0-4.4.9-5.9 2.2L.7 4.3A10.6 10.6 0 0 1 8 1.4z"/></svg>
+            <span class="sb-batt"><i></i></span>
+          </span>
+        </div>
+
+        <button class="widget" id="widget" title="Say hi by email">
+          <img class="w-avatar" src="/avatar.png" alt="Aness Bouziani" />
+          <span class="w-text">
+            <span class="w-name">Aness Bouziani</span>
+            <span class="w-sub">open to work — say hi 👋</span>
+          </span>
+          <span class="w-dot"></span>
+        </button>
+
+        <div class="grid" id="grid">
+          {
+            GRID.map((app) =>
+              app.href ? (
+                <a
+                  class="app"
+                  href={app.href}
+                  target={external(app.href) ? '_blank' : undefined}
+                  rel={external(app.href) ? 'noopener' : undefined}
+                >
+                  <span class={`tile ${app.cls}`} set:html={app.glyph} />
+                  <span class="badge">✕</span>
+                  <span class="app-label">{app.name}</span>
+                </a>
+              ) : (
+                <button class="app app-deco" data-msg={app.msg}>
+                  <span class={`tile ${app.cls}`} set:html={app.glyph} />
+                  <span class="badge">✕</span>
+                  <span class="app-label">{app.name}</span>
+                </button>
+              )
+            )
+          }
+        </div>
+
+        <div class="dots"><i class="on"></i><i></i></div>
+
+        <div class="dock">
+          {
+            DOCK.map((app) => (
+              <a
+                class="app app-dock"
+                href={app.href}
+                target={external(app.href) ? '_blank' : undefined}
+                rel={external(app.href) ? 'noopener' : undefined}
+                title={app.name}
+              >
+                <span class={`tile ${app.cls}`} set:html={app.glyph} />
+                <span class="badge">✕</span>
+              </a>
+            ))
+          }
+        </div>
+
+        <div class="homebar"></div>
+
+        <div class="banner" id="banner"></div>
+        <button class="done-pill" id="done-pill">Done</button>
+      </div>
+    </div>
   </main>
 </Base>
 
+<script>
+  const screen = document.getElementById('screen')!;
+  const iphone = document.getElementById('iphone')!;
+  const stage = document.getElementById('stage')!;
+  const banner = document.getElementById('banner')!;
+  const donePill = document.getElementById('done-pill')!;
+  const widget = document.getElementById('widget')!;
+
+  // ---------- live status bar / calendar / clock ----------
+  const sbTime = document.getElementById('sb-time')!;
+  const calDow = document.getElementById('cal-dow')!;
+  const calDay = document.getElementById('cal-day')!;
+  const hHour = document.getElementById('h-hour')!;
+  const hMin = document.getElementById('h-min')!;
+  const hSec = document.getElementById('h-sec')!;
+  const DOW = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+  const tick = () => {
+    const d = new Date();
+    sbTime.textContent = `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+    calDow.textContent = DOW[d.getDay()];
+    calDay.textContent = String(d.getDate());
+    const s = d.getSeconds();
+    const m = d.getMinutes() + s / 60;
+    const h = (d.getHours() % 12) + m / 60;
+    hHour.style.transform = `translateX(-50%) rotate(${h * 30}deg)`;
+    hMin.style.transform = `translateX(-50%) rotate(${m * 6}deg)`;
+    hSec.style.transform = `translateX(-50%) rotate(${s * 6}deg)`;
+  };
+  tick();
+  setInterval(tick, 1000);
+
+  // ---------- banner ----------
+  let bannerTimer = 0;
+  const toast = (msg: string) => {
+    banner.textContent = msg;
+    banner.classList.add('show');
+    clearTimeout(bannerTimer);
+    bannerTimer = window.setTimeout(() => banner.classList.remove('show'), 2600);
+  };
+
+  // ---------- decorative apps talk back ----------
+  for (const el of document.querySelectorAll<HTMLElement>('.app-deco')) {
+    el.addEventListener('click', () => {
+      if (screen.classList.contains('jiggle')) return;
+      el.classList.remove('bounce');
+      void el.offsetWidth; // restart the animation
+      el.classList.add('bounce');
+      toast(el.dataset.msg!);
+    });
+  }
+  widget.addEventListener('click', () => {
+    if (!screen.classList.contains('jiggle')) window.location.href = 'mailto:oa_bouziani@esi.dz';
+  });
+
+  // ---------- jiggle mode (long-press, like the real thing) ----------
+  let pressTimer = 0;
+  let pressStart: { x: number; y: number } | null = null;
+
+  const enterJiggle = () => {
+    if (!screen.classList.contains('jiggle')) {
+      screen.classList.add('jiggle');
+      toast('jiggle mode — rearrange my life, or press Done');
+    }
+  };
+  const exitJiggle = () => screen.classList.remove('jiggle');
+
+  screen.addEventListener('pointerdown', (e) => {
+    if ((e.target as HTMLElement).closest('.done-pill')) return;
+    pressStart = { x: e.clientX, y: e.clientY };
+    clearTimeout(pressTimer);
+    pressTimer = window.setTimeout(enterJiggle, 550);
+  });
+  const cancelPress = () => {
+    clearTimeout(pressTimer);
+    pressStart = null;
+  };
+  screen.addEventListener('pointerup', cancelPress);
+  screen.addEventListener('pointerleave', cancelPress);
+  screen.addEventListener('pointermove', (e) => {
+    if (pressStart && Math.hypot(e.clientX - pressStart.x, e.clientY - pressStart.y) > 12) cancelPress();
+  });
+
+  donePill.addEventListener('click', exitJiggle);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') exitJiggle();
+  });
+
+  // while jiggling: block navigation, allow "deleting"
+  screen.addEventListener(
+    'click',
+    (e) => {
+      if (!screen.classList.contains('jiggle')) return;
+      const badge = (e.target as HTMLElement).closest('.badge');
+      const app = (e.target as HTMLElement).closest<HTMLElement>('.app');
+      e.preventDefault();
+      e.stopPropagation();
+      if (!badge || !app) return;
+      if (app.classList.contains('app-deco')) {
+        app.classList.add('poof');
+        setTimeout(() => app.remove(), 220);
+      } else {
+        iphone.classList.remove('shake');
+        void iphone.offsetWidth;
+        iphone.classList.add('shake');
+        toast("nice try — you'll need that one to reach me 😉");
+      }
+    },
+    true
+  );
+
+  // ---------- subtle 3D tilt toward the cursor ----------
+  const fine = window.matchMedia('(pointer: fine)').matches;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (fine && !reduced) {
+    stage.addEventListener('mousemove', (e) => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      iphone.style.transform = `rotateY(${x * 7}deg) rotateX(${-y * 5}deg)`;
+    });
+    stage.addEventListener('mouseleave', () => {
+      iphone.style.transform = '';
+    });
+  }
+</script>
+
 <style>
-  .placeholder {
-    padding: 48px;
+  .header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 34px 44px 0;
   }
-  h1 {
-    font-size: 2.4rem;
-    letter-spacing: -0.03em;
-  }
-  a {
+  .back {
+    font-size: 26px;
+    font-weight: 700;
     color: #141414;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .back:hover {
+    color: #6fbbff;
+  }
+  .title {
+    margin: 0;
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .hint {
+    margin: 6px 0 0;
+    font-size: 15px;
+    color: #9a9a9a;
+  }
+
+  .stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px 36px;
+    perspective: 1400px;
+  }
+
+  /* ---------- the phone ---------- */
+  .iphone {
+    position: relative;
+    width: clamp(270px, 36vh, 345px);
+    aspect-ratio: 9 / 19;
+    background: linear-gradient(145deg, #3d3f44, #17181b 40%, #26272b);
+    border-radius: 13.5%/ 6.4%;
+    padding: 9px;
+    box-shadow:
+      0 40px 90px rgba(0, 0, 0, 0.35),
+      0 6px 22px rgba(0, 0, 0, 0.22),
+      inset 0 0 0 2px #4c4e55;
+    transition: transform 0.25s ease;
+    transform-style: preserve-3d;
+    animation: arrive 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes arrive {
+    from {
+      opacity: 0;
+      translate: 0 34px;
+    }
+  }
+  .iphone.shake {
+    animation: phone-shake 0.45s ease;
+  }
+  @keyframes phone-shake {
+    20% { translate: -7px 0; }
+    40% { translate: 6px 0; }
+    60% { translate: -4px 0; }
+    80% { translate: 3px 0; }
+  }
+  .side-btn {
+    position: absolute;
+    background: #3a3c41;
+    border-radius: 3px;
+  }
+  .side-action { left: -2.5px; top: 18%; width: 3px; height: 4.5%; }
+  .side-vol1 { left: -2.5px; top: 26%; width: 3px; height: 7%; }
+  .side-vol2 { left: -2.5px; top: 34.5%; width: 3px; height: 7%; }
+  .side-power { right: -2.5px; top: 29%; width: 3px; height: 10%; }
+
+  .screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 11.5%/ 5.5%;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 85% -10%, rgba(255, 255, 255, 0.55), transparent 60%),
+      linear-gradient(160deg, #a8c6ff 0%, #c8b9ff 34%, #ffd3e6 68%, #ffe8c6 100%);
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+  }
+  .island {
+    position: absolute;
+    top: 2.1%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 29%;
+    height: 3.4%;
+    background: #000;
+    border-radius: 999px;
+    z-index: 6;
+  }
+
+  .statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3.4% 7% 0;
+    font-size: 13px;
+    font-weight: 650;
+    color: #1c1c1e;
+  }
+  .sb-right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .sb-signal { width: 17px; height: 11px; }
+  .sb-wifi { width: 15px; height: 11px; }
+  .sb-batt {
+    width: 23px;
+    height: 11.5px;
+    border: 1.4px solid rgba(28, 28, 30, 0.55);
+    border-radius: 3.5px;
+    padding: 1.5px;
+    display: block;
+    position: relative;
+  }
+  .sb-batt::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 3px;
+    width: 2px;
+    height: 4px;
+    background: rgba(28, 28, 30, 0.55);
+    border-radius: 0 2px 2px 0;
+  }
+  .sb-batt i {
+    display: block;
+    height: 100%;
+    width: 78%;
+    background: #1c1c1e;
+    border-radius: 1.5px;
+  }
+
+  /* ---------- widget ---------- */
+  .widget {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 5% 5.5% 1.5%;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.42);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 24px rgba(60, 70, 120, 0.14);
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    transition: transform 0.18s ease;
+  }
+  .widget:hover { transform: scale(1.02); }
+  .widget:active { transform: scale(0.98); }
+  .w-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+    background: #fff;
+  }
+  .w-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .w-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #16181d;
+    letter-spacing: -0.01em;
+  }
+  .w-sub {
+    font-size: 11.5px;
+    color: #4c5566;
+  }
+  .w-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #34c759;
+    margin-left: auto;
+    box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.25);
+    animation: pulse 2.2s ease infinite;
+  }
+  @keyframes pulse {
+    50% { box-shadow: 0 0 0 6px rgba(52, 199, 89, 0.08); }
+  }
+
+  /* ---------- app grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4.5% 2%;
+    padding: 3.5% 5.5% 0;
+    flex: 1;
+    align-content: start;
+  }
+  .app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: none;
+    font: inherit;
+    -webkit-tap-highlight-color: transparent;
+    animation: pop-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      scale: 0.6;
+    }
+  }
+  .grid .app:nth-child(1) { animation-delay: 0.05s; }
+  .grid .app:nth-child(2) { animation-delay: 0.09s; }
+  .grid .app:nth-child(3) { animation-delay: 0.13s; }
+  .grid .app:nth-child(4) { animation-delay: 0.17s; }
+  .grid .app:nth-child(5) { animation-delay: 0.21s; }
+  .grid .app:nth-child(6) { animation-delay: 0.25s; }
+  .grid .app:nth-child(7) { animation-delay: 0.29s; }
+  .grid .app:nth-child(8) { animation-delay: 0.33s; }
+  .grid .app:nth-child(9) { animation-delay: 0.37s; }
+  .grid .app:nth-child(10) { animation-delay: 0.41s; }
+  .grid .app:nth-child(11) { animation-delay: 0.45s; }
+  .grid .app:nth-child(12) { animation-delay: 0.49s; }
+
+  .tile {
+    width: min(100%, 56px);
+    aspect-ratio: 1;
+    border-radius: 24%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(40, 50, 90, 0.18);
+    transition: transform 0.16s ease, filter 0.16s ease;
+    overflow: hidden;
+  }
+  .app:hover .tile {
+    transform: scale(1.09) translateY(-2px);
+    filter: brightness(1.05);
+  }
+  .app:active .tile {
+    transform: scale(0.92);
+    filter: brightness(0.9);
+  }
+  .app.bounce .tile {
+    animation: deco-bounce 0.4s ease;
+  }
+  @keyframes deco-bounce {
+    30% { transform: scale(0.85) rotate(-4deg); }
+    65% { transform: scale(1.08) rotate(3deg); }
+  }
+  .app.poof {
+    transition: all 0.2s ease-in;
+    scale: 0.1;
+    opacity: 0;
+  }
+  .tile :global(svg) { width: 54%; height: 54%; }
+  .tile :global(img) { width: 52%; height: 52%; object-fit: contain; }
+  .tile-safari :global(svg) { width: 84%; height: 84%; }
+  .app-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: #2b2f38;
+    text-shadow: 0 1px 4px rgba(255, 255, 255, 0.5);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* tiles */
+  .tile-phone { background: linear-gradient(180deg, #67e575, #2bb943); }
+  .tile-gmail { background: #fff; }
+  .tile-github { background: #24292f; }
+  .tile-linkedin { background: #0a66c2; }
+  .in-mark {
+    color: #fff;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    font-family: -apple-system, sans-serif;
+  }
+  .tile-instagram {
+    background: radial-gradient(circle at 28% 110%, #fdf497 0%, #fd5949 45%, #d6249f 62%, #285aeb 92%);
+  }
+  .tile-facebook { background: #1877f2; }
+  .tile-whatsapp { background: linear-gradient(180deg, #5bd066, #27b43e); }
+  .tile-safari { background: #f4f5f7; }
+  .tile-camera { background: linear-gradient(180deg, #edeef1, #cfd2d8); }
+  .tile-maps { background: linear-gradient(180deg, #d5f1d6 55%, #c9e8fb 55%); }
+  .tile-music { background: linear-gradient(180deg, #fa5a72, #fa233b); }
+
+  .tile-cal {
+    background: #fff;
+    flex-direction: column;
+    gap: 0;
+  }
+  .cal-dow {
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #fc574e;
+    letter-spacing: 0.06em;
+    margin-top: 6%;
+  }
+  .cal-day {
+    font-size: 24px;
+    font-weight: 300;
+    color: #1c1c1e;
+    line-height: 1;
+  }
+
+  .tile-clock { background: #fff; }
+  .clockface {
+    position: relative;
+    width: 78%;
+    height: 78%;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #16181d;
+  }
+  .hand {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    transform-origin: 50% 100%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+    background: #16181d;
+  }
+  .h-hour { width: 2.4px; height: 26%; }
+  .h-min { width: 1.8px; height: 36%; }
+  .h-sec { width: 1px; height: 40%; background: #fc574e; }
+
+  .tile-photos { background: #fff; }
+  .photos-flower {
+    width: 62%;
+    height: 62%;
+    border-radius: 50%;
+    background: conic-gradient(#ffcc00, #ff9500, #ff2d55, #af52de, #007aff, #34c759, #a2e04c, #ffcc00);
+    filter: blur(1.2px) saturate(1.15);
+    mask: radial-gradient(circle, transparent 18%, #000 19%);
+    -webkit-mask: radial-gradient(circle, transparent 18%, #000 19%);
+  }
+
+  .tile-notes {
+    background: linear-gradient(180deg, #ffdd66 26%, #fff 26%);
+  }
+  .notes-paper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 58%;
+    margin-top: 26%;
+  }
+  .notes-paper i {
+    height: 2px;
+    border-radius: 2px;
+    background: #d9d9de;
+  }
+  .notes-paper i:first-child { width: 80%; }
+  .notes-paper i:nth-child(2) { width: 100%; }
+  .notes-paper i:nth-child(3) { width: 62%; }
+
+  .tile-calc { background: #16181d; }
+  .calc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    width: 55%;
+  }
+  .calc-grid i {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #8e8e93;
+  }
+  .calc-grid i.op { background: #ff9f0a; }
+
+  /* ---------- dots / dock / home bar ---------- */
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    padding: 1.5% 0;
+  }
+  .dots i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(28, 28, 30, 0.25);
+  }
+  .dots i.on { background: rgba(28, 28, 30, 0.7); }
+
+  .dock {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 4% 2.5%;
+    padding: 3.5% 5%;
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 0.34);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .app-dock .tile { width: min(100%, 56px); }
+  .app-dock { animation-delay: 0.5s; }
+
+  .homebar {
+    width: 36%;
+    height: 4.5px;
+    border-radius: 999px;
+    background: rgba(28, 28, 30, 0.75);
+    margin: 0 auto 2.4%;
+  }
+
+  /* ---------- banner + jiggle ---------- */
+  .banner {
+    position: absolute;
+    top: 7.5%;
+    left: 50%;
+    transform: translate(-50%, -12px);
+    max-width: 84%;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: rgba(22, 24, 29, 0.92);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 550;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    z-index: 7;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+  }
+  .banner.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  .done-pill {
+    position: absolute;
+    top: 6.8%;
+    right: 5%;
+    z-index: 8;
+    display: none;
+    padding: 5px 14px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #16181d;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+  }
+  .screen.jiggle .done-pill { display: block; }
+
+  .badge {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    z-index: 2;
+    display: none;
+    width: 18px;
+    height: 18px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(28, 28, 30, 0.82);
+    color: #fff;
+    font-size: 9px;
+    line-height: 1;
+  }
+  .screen.jiggle .badge { display: flex; }
+  .screen.jiggle .app .tile {
+    animation: jig 0.33s ease-in-out infinite;
+  }
+  .screen.jiggle .app:nth-child(2n) .tile {
+    animation-duration: 0.37s;
+    animation-direction: reverse;
+  }
+  @keyframes jig {
+    0%, 100% { transform: rotate(-2.4deg); }
+    50% { transform: rotate(2.4deg); }
+  }
+  .screen.jiggle .app-label {
+    opacity: 0.6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app,
+    .iphone {
+      animation: none !important;
+    }
+    .screen.jiggle .app .tile {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .header {
+      padding: 22px 24px 0;
+    }
+    .stage {
+      padding: 14px 10px 26px;
+    }
+    .iphone {
+      width: min(78vw, 330px);
+    }
   }
 </style>
