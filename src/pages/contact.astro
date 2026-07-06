@@ -13,103 +13,35 @@ const LINKS = {
 };
 // ───────────────────────────────────────────────────────────────
 
-const si = (slug: string, color = 'ffffff') => `https://cdn.simpleicons.org/${slug}/${color}`;
-
-const PHONE_SVG = `<svg viewBox="0 0 24 24" fill="#fff"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>`;
-const CAMERA_SVG = `<svg viewBox="0 0 24 24" fill="#3c3f45"><path d="M9.4 4l-1.2 1.6H5a2 2 0 0 0-2 2V18a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7.6a2 2 0 0 0-2-2h-3.2L14.6 4H9.4zM12 17.2a4.2 4.2 0 1 1 0-8.4 4.2 4.2 0 0 1 0 8.4zm0-1.6a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2z"/></svg>`;
-const GEAR_SVG = `<svg viewBox="0 0 24 24" fill="#63676e"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.73 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>`;
-const SAFARI_SVG = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.4" fill="#3693f3"/><circle cx="12" cy="12" r="9.2" fill="#fff"/><circle cx="12" cy="12" r="8.4" fill="#3693f3"/><polygon points="13.8,13.8 7,17 10.2,10.2" fill="#fff"/><polygon points="17,7 13.8,13.8 10.2,10.2" fill="#ff3b30"/></svg>`;
-const PIN_SVG = `<svg viewBox="0 0 24 24" fill="#fc574e"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>`;
-const MUSIC_SVG = `<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>`;
-
 interface App {
   name: string;
-  cls: string;
-  glyph: string;
+  icon?: string; // official app icon in /public/icons
+  live?: 'calendar' | 'clock'; // rendered live (real date / ticking clock), like iOS does
   href?: string; // clickable → real contact link
   msg?: string; // decorative → funny banner message
 }
 
+// icons are the official App Store artwork, downloaded to /public/icons
 const GRID: App[] = [
-  {
-    name: 'Calendar',
-    cls: 'tile-cal',
-    glyph: `<span class="cal-dow" id="cal-dow">MON</span><span class="cal-day" id="cal-day">1</span>`,
-    msg: 'my calendar is wide open — book me 😌',
-  },
-  {
-    name: 'Clock',
-    cls: 'tile-clock',
-    glyph: `<span class="clockface"><i class="hand h-hour" id="h-hour"></i><i class="hand h-min" id="h-min"></i><i class="hand h-sec" id="h-sec"></i></span>`,
-    msg: "it's always a good time to say hi ⏰",
-  },
-  {
-    name: 'Photos',
-    cls: 'tile-photos',
-    glyph: `<span class="photos-flower"></span>`,
-    msg: 'mostly screenshots of terminal output 🖼️',
-  },
-  {
-    name: 'Camera',
-    cls: 'tile-camera',
-    glyph: CAMERA_SVG,
-    msg: 'say cheese… nope, nothing here 📸',
-  },
-  {
-    name: 'Instagram',
-    cls: 'tile-instagram',
-    glyph: `<img src="${si('instagram')}" alt="" loading="lazy" />`,
-    href: LINKS.instagram,
-  },
-  {
-    name: 'Facebook',
-    cls: 'tile-facebook',
-    glyph: `<img src="${si('facebook')}" alt="" loading="lazy" />`,
-    href: LINKS.facebook,
-  },
-  {
-    name: 'WhatsApp',
-    cls: 'tile-whatsapp',
-    glyph: `<img src="${si('whatsapp')}" alt="" loading="lazy" />`,
-    href: LINKS.whatsapp,
-  },
-  {
-    name: 'Safari',
-    cls: 'tile-safari',
-    glyph: SAFARI_SVG,
-    msg: "you're already on the best website 😎",
-  },
-  {
-    name: 'Notes',
-    cls: 'tile-notes',
-    glyph: `<span class="notes-paper"><i></i><i></i><i></i></span>`,
-    msg: 'TODO: reply to Aness ✏️',
-  },
-  {
-    name: 'Calculator',
-    cls: 'tile-calc',
-    glyph: `<span class="calc-grid"><i></i><i></i><i class="op"></i><i></i><i></i><i class="op"></i></span>`,
-    msg: 'you + me = 🤝 (the math checks out)',
-  },
-  {
-    name: 'Maps',
-    cls: 'tile-maps',
-    glyph: PIN_SVG,
-    msg: '📍 Algiers, Algeria — remote-friendly',
-  },
-  {
-    name: 'Music',
-    cls: 'tile-music',
-    glyph: MUSIC_SVG,
-    msg: 'lo-fi beats to debug to 🎧',
-  },
+  { name: 'Calendar', live: 'calendar', msg: 'my calendar is wide open — book me 😌' },
+  { name: 'Clock', live: 'clock', msg: "it's always a good time to say hi ⏰" },
+  { name: 'Photos', icon: '/icons/photos.jpg', msg: 'mostly screenshots of terminal output 🖼️' },
+  { name: 'Camera', icon: '/icons/camera.jpg', msg: 'say cheese… nope, nothing here 📸' },
+  { name: 'Instagram', icon: '/icons/instagram.jpg', href: LINKS.instagram },
+  { name: 'Facebook', icon: '/icons/facebook.jpg', href: LINKS.facebook },
+  { name: 'WhatsApp', icon: '/icons/whatsapp.jpg', href: LINKS.whatsapp },
+  { name: 'Safari', icon: '/icons/safari.jpg', msg: "you're already on the best website 😎" },
+  { name: 'Notes', icon: '/icons/notes.jpg', msg: 'TODO: reply to Aness ✏️' },
+  { name: 'Calculator', icon: '/icons/calculator.jpg', msg: 'you + me = 🤝 (the math checks out)' },
+  { name: 'Maps', icon: '/icons/maps.jpg', msg: '📍 Algiers, Algeria — remote-friendly' },
+  { name: 'Music', icon: '/icons/music.jpg', msg: 'lo-fi beats to debug to 🎧' },
 ];
 
 const DOCK: App[] = [
-  { name: 'Phone', cls: 'tile-phone', glyph: PHONE_SVG, href: LINKS.phone },
-  { name: 'Gmail', cls: 'tile-gmail', glyph: `<img src="${si('gmail', 'EA4335')}" alt="" loading="lazy" />`, href: LINKS.gmail },
-  { name: 'GitHub', cls: 'tile-github', glyph: `<img src="${si('github')}" alt="" loading="lazy" />`, href: LINKS.github },
-  { name: 'LinkedIn', cls: 'tile-linkedin', glyph: `<span class="in-mark">in</span>`, href: LINKS.linkedin },
+  { name: 'Phone', icon: '/icons/phone.jpg', href: LINKS.phone },
+  { name: 'Gmail', icon: '/icons/gmail.jpg', href: LINKS.gmail },
+  { name: 'GitHub', icon: '/icons/github.jpg', href: LINKS.github },
+  { name: 'LinkedIn', icon: '/icons/linkedin.jpg', href: LINKS.linkedin },
 ];
 
 const external = (href?: string) => !!href && !href.startsWith('mailto:') && !href.startsWith('tel:');
@@ -137,7 +69,7 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
         <div class="statusbar">
           <span class="sb-time" id="sb-time">9:41</span>
           <span class="sb-right">
-            <svg class="sb-signal" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0.5" width="3" height="11.5" rx="1"/></svg>
+            <svg class="sb-signal" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7.5" width="3" height="4.5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
             <svg class="sb-wifi" viewBox="0 0 16 12" fill="currentColor"><path d="M8 9.6a1.7 1.7 0 0 1 1.7 1.7L8 12l-1.7-.7A1.7 1.7 0 0 1 8 9.6zM8 5.5c1.7 0 3.2.6 4.4 1.7l-1.4 1.5A4.4 4.4 0 0 0 8 7.6c-1.1 0-2.2.4-3 1.1L3.6 7.2A6.5 6.5 0 0 1 8 5.5zM8 1.4c2.8 0 5.4 1.1 7.3 2.9L13.9 5.7A8.5 8.5 0 0 0 8 3.5c-2.3 0-4.4.9-5.9 2.2L.7 4.3A10.6 10.6 0 0 1 8 1.4z"/></svg>
             <span class="sb-batt"><i></i></span>
           </span>
@@ -154,26 +86,44 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
 
         <div class="grid" id="grid">
           {
-            GRID.map((app) =>
-              app.href ? (
+            GRID.map((app) => {
+              const tile =
+                app.live === 'calendar' ? (
+                  <span class="tile tile-cal">
+                    <span class="cal-dow" id="cal-dow">MON</span>
+                    <span class="cal-day" id="cal-day">1</span>
+                  </span>
+                ) : app.live === 'clock' ? (
+                  <span class="tile tile-clock">
+                    <span class="clockface">
+                      <i class="hand h-hour" id="h-hour"></i>
+                      <i class="hand h-min" id="h-min"></i>
+                      <i class="hand h-sec" id="h-sec"></i>
+                      <i class="pin"></i>
+                    </span>
+                  </span>
+                ) : (
+                  <span class="tile"><img src={app.icon} alt="" loading="lazy" /></span>
+                );
+              return app.href ? (
                 <a
                   class="app"
                   href={app.href}
                   target={external(app.href) ? '_blank' : undefined}
                   rel={external(app.href) ? 'noopener' : undefined}
                 >
-                  <span class={`tile ${app.cls}`} set:html={app.glyph} />
+                  {tile}
                   <span class="badge">✕</span>
                   <span class="app-label">{app.name}</span>
                 </a>
               ) : (
                 <button class="app app-deco" data-msg={app.msg}>
-                  <span class={`tile ${app.cls}`} set:html={app.glyph} />
+                  {tile}
                   <span class="badge">✕</span>
                   <span class="app-label">{app.name}</span>
                 </button>
-              )
-            )
+              );
+            })
           }
         </div>
 
@@ -189,7 +139,7 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
                 rel={external(app.href) ? 'noopener' : undefined}
                 title={app.name}
               >
-                <span class={`tile ${app.cls}`} set:html={app.glyph} />
+                <span class="tile"><img src={app.icon} alt={app.name} loading="lazy" /></span>
                 <span class="badge">✕</span>
               </a>
             ))
@@ -220,7 +170,7 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
   const hHour = document.getElementById('h-hour')!;
   const hMin = document.getElementById('h-min')!;
   const hSec = document.getElementById('h-sec')!;
-  const DOW = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  const DOW = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 
   const tick = () => {
     const d = new Date();
@@ -371,18 +321,23 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     perspective: 1400px;
   }
 
-  /* ---------- the phone ---------- */
+  /* ---------- the phone ----------
+     everything inside is sized in cqw (1% of the phone's width),
+     so the whole device scales as one piece, like a render */
   .iphone {
+    --r: 16.4cqw; /* outer corner radius */
     position: relative;
-    width: clamp(270px, 36vh, 345px);
-    aspect-ratio: 9 / 19;
-    background: linear-gradient(145deg, #3d3f44, #17181b 40%, #26272b);
-    border-radius: 13.5%/ 6.4%;
-    padding: 9px;
+    container-type: inline-size;
+    width: clamp(280px, 38vh, 355px);
+    aspect-ratio: 9 / 19.2;
+    /* titanium band */
+    background: linear-gradient(145deg, #6a6c72, #3a3b40 28%, #55575d 52%, #2c2d31 78%, #4a4c52);
+    border-radius: 16.4cqw;
+    padding: 1.1cqw;
     box-shadow:
       0 40px 90px rgba(0, 0, 0, 0.35),
       0 6px 22px rgba(0, 0, 0, 0.22),
-      inset 0 0 0 2px #4c4e55;
+      inset 0 0 1px 1px rgba(255, 255, 255, 0.25);
     transition: transform 0.25s ease;
     transform-style: preserve-3d;
     animation: arrive 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -404,19 +359,21 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
   }
   .side-btn {
     position: absolute;
-    background: #3a3c41;
-    border-radius: 3px;
+    background: linear-gradient(90deg, #7c7e84, #46474c);
+    border-radius: 2px;
   }
-  .side-action { left: -2.5px; top: 18%; width: 3px; height: 4.5%; }
-  .side-vol1 { left: -2.5px; top: 26%; width: 3px; height: 7%; }
-  .side-vol2 { left: -2.5px; top: 34.5%; width: 3px; height: 7%; }
-  .side-power { right: -2.5px; top: 29%; width: 3px; height: 10%; }
+  .side-action { left: -0.8cqw; top: 17.5%; width: 0.9cqw; height: 3.6%; }
+  .side-vol1 { left: -0.8cqw; top: 24.5%; width: 0.9cqw; height: 5.6%; }
+  .side-vol2 { left: -0.8cqw; top: 31.5%; width: 0.9cqw; height: 5.6%; }
+  .side-power { right: -0.8cqw; top: 27%; width: 0.9cqw; height: 8.6%; }
 
   .screen {
     position: relative;
     width: 100%;
     height: 100%;
-    border-radius: 11.5%/ 5.5%;
+    /* black bezel between titanium and the display */
+    border: 2.6cqw solid #010102;
+    border-radius: calc(var(--r) - 1.1cqw);
     overflow: hidden;
     background:
       radial-gradient(120% 90% at 85% -10%, rgba(255, 255, 255, 0.55), transparent 60%),
@@ -425,70 +382,90 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     flex-direction: column;
     user-select: none;
   }
+
+  /* ---------- Dynamic Island + status bar (shared band, iOS proportions) ---------- */
   .island {
     position: absolute;
-    top: 2.1%;
+    top: 2.6cqw;
     left: 50%;
     transform: translateX(-50%);
-    width: 29%;
-    height: 3.4%;
+    width: 30.5cqw;
+    height: 8.6cqw;
     background: #000;
     border-radius: 999px;
     z-index: 6;
   }
-
+  .island::after {
+    /* camera lens glint */
+    content: '';
+    position: absolute;
+    right: 2.4cqw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3.4cqw;
+    height: 3.4cqw;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #1e2f4d 0 28%, #0a0d14 60%);
+  }
   .statusbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 3.4% 7% 0;
-    font-size: 13px;
-    font-weight: 650;
+    margin-top: 2.6cqw;
+    height: 8.6cqw;
+    padding: 0 8.4cqw 0 9.4cqw;
     color: #1c1c1e;
+  }
+  .sb-time {
+    font-size: 4.5cqw;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
   }
   .sb-right {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 1.7cqw;
   }
-  .sb-signal { width: 17px; height: 11px; }
-  .sb-wifi { width: 15px; height: 11px; }
+  .sb-signal { width: 5.2cqw; height: 3.4cqw; }
+  .sb-wifi { width: 4.7cqw; height: 3.5cqw; }
   .sb-batt {
-    width: 23px;
-    height: 11.5px;
-    border: 1.4px solid rgba(28, 28, 30, 0.55);
-    border-radius: 3.5px;
-    padding: 1.5px;
+    width: 7.4cqw;
+    height: 3.7cqw;
+    border: 0.4cqw solid rgba(28, 28, 30, 0.4);
+    border-radius: 1.2cqw;
+    padding: 0.5cqw;
     display: block;
     position: relative;
   }
   .sb-batt::after {
     content: '';
     position: absolute;
-    right: -4px;
-    top: 3px;
-    width: 2px;
-    height: 4px;
-    background: rgba(28, 28, 30, 0.55);
-    border-radius: 0 2px 2px 0;
+    right: -1.3cqw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.7cqw;
+    height: 1.5cqw;
+    background: rgba(28, 28, 30, 0.4);
+    border-radius: 0 1cqw 1cqw 0;
   }
   .sb-batt i {
     display: block;
     height: 100%;
-    width: 78%;
+    width: 82%;
     background: #1c1c1e;
-    border-radius: 1.5px;
+    border-radius: 0.5cqw;
   }
 
   /* ---------- widget ---------- */
   .widget {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin: 5% 5.5% 1.5%;
-    padding: 12px 14px;
+    gap: 3.4cqw;
+    margin: 5.6cqw 6cqw 1cqw;
+    padding: 3.4cqw 4cqw;
     border: none;
-    border-radius: 22px;
+    border-radius: 6.4cqw;
     background: rgba(255, 255, 255, 0.42);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
@@ -501,8 +478,8 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
   .widget:hover { transform: scale(1.02); }
   .widget:active { transform: scale(0.98); }
   .w-avatar {
-    width: 42px;
-    height: 42px;
+    width: 12cqw;
+    height: 12cqw;
     border-radius: 50%;
     object-fit: cover;
     object-position: top;
@@ -511,47 +488,48 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
   .w-text {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 0.6cqw;
     min-width: 0;
   }
   .w-name {
-    font-size: 14px;
+    font-size: 4cqw;
     font-weight: 700;
     color: #16181d;
     letter-spacing: -0.01em;
   }
   .w-sub {
-    font-size: 11.5px;
+    font-size: 3.3cqw;
     color: #4c5566;
   }
   .w-dot {
-    width: 9px;
-    height: 9px;
+    width: 2.6cqw;
+    height: 2.6cqw;
     border-radius: 50%;
     background: #34c759;
     margin-left: auto;
-    box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.25);
+    box-shadow: 0 0 0 0.9cqw rgba(52, 199, 89, 0.25);
     animation: pulse 2.2s ease infinite;
   }
   @keyframes pulse {
-    50% { box-shadow: 0 0 0 6px rgba(52, 199, 89, 0.08); }
+    50% { box-shadow: 0 0 0 1.8cqw rgba(52, 199, 89, 0.08); }
   }
 
   /* ---------- app grid ---------- */
   .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 4.5% 2%;
-    padding: 3.5% 5.5% 0;
+    gap: 3.2cqw 0;
+    padding: 3.6cqw 4.6cqw 0;
     flex: 1;
     align-content: start;
+    justify-items: center;
   }
   .app {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 1.6cqw;
     background: none;
     border: none;
     padding: 0;
@@ -580,16 +558,25 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
   .grid .app:nth-child(11) { animation-delay: 0.45s; }
   .grid .app:nth-child(12) { animation-delay: 0.49s; }
 
+  /* one size for every icon on the phone — grid AND dock */
   .tile {
-    width: min(100%, 56px);
-    aspect-ratio: 1;
-    border-radius: 24%;
+    width: 16.2cqw;
+    height: 16.2cqw;
+    border-radius: 22.4%; /* iOS superellipse-ish */
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(40, 50, 90, 0.18);
+    box-shadow: 0 1.2cqw 3cqw rgba(40, 50, 90, 0.22);
     transition: transform 0.16s ease, filter 0.16s ease;
     overflow: hidden;
+    background: #fff;
+  }
+  .tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
   }
   .app:hover .tile {
     transform: scale(1.09) translateY(-2px);
@@ -611,69 +598,57 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     scale: 0.1;
     opacity: 0;
   }
-  .tile :global(svg) { width: 54%; height: 54%; }
-  .tile :global(img) { width: 52%; height: 52%; object-fit: contain; }
-  .tile-safari :global(svg) { width: 84%; height: 84%; }
   .app-label {
-    font-size: 10.5px;
+    font-size: 3.1cqw;
     font-weight: 500;
     color: #2b2f38;
     text-shadow: 0 1px 4px rgba(255, 255, 255, 0.5);
-    max-width: 100%;
+    max-width: 20cqw;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  /* tiles */
-  .tile-phone { background: linear-gradient(180deg, #67e575, #2bb943); }
-  .tile-gmail { background: #fff; }
-  .tile-github { background: #24292f; }
-  .tile-linkedin { background: #0a66c2; }
-  .in-mark {
-    color: #fff;
-    font-weight: 800;
-    font-size: 26px;
-    letter-spacing: -0.02em;
-    font-family: -apple-system, sans-serif;
-  }
-  .tile-instagram {
-    background: radial-gradient(circle at 28% 110%, #fdf497 0%, #fd5949 45%, #d6249f 62%, #285aeb 92%);
-  }
-  .tile-facebook { background: #1877f2; }
-  .tile-whatsapp { background: linear-gradient(180deg, #5bd066, #27b43e); }
-  .tile-safari { background: #f4f5f7; }
-  .tile-camera { background: linear-gradient(180deg, #edeef1, #cfd2d8); }
-  .tile-maps { background: linear-gradient(180deg, #d5f1d6 55%, #c9e8fb 55%); }
-  .tile-music { background: linear-gradient(180deg, #fa5a72, #fa233b); }
-
+  /* ---------- live Calendar (real date, like iOS) ---------- */
   .tile-cal {
     background: #fff;
     flex-direction: column;
+    justify-content: flex-start;
     gap: 0;
   }
   .cal-dow {
-    font-size: 8.5px;
-    font-weight: 700;
-    color: #fc574e;
-    letter-spacing: 0.06em;
-    margin-top: 6%;
+    font-size: 2cqw;
+    font-weight: 600;
+    color: #fc3d39;
+    letter-spacing: 0.08em;
+    margin-top: 2.4cqw;
   }
   .cal-day {
-    font-size: 24px;
-    font-weight: 300;
+    font-size: 8.6cqw;
+    font-weight: 280;
     color: #1c1c1e;
-    line-height: 1;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
   }
 
-  .tile-clock { background: #fff; }
+  /* ---------- live Clock (real ticking time, like iOS) ---------- */
+  .tile-clock { background: #000; }
   .clockface {
     position: relative;
-    width: 78%;
-    height: 78%;
+    width: 88%;
+    height: 88%;
     border-radius: 50%;
     background: #fff;
-    border: 2px solid #16181d;
+  }
+  .clockface::before {
+    /* 12 hour ticks */
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: repeating-conic-gradient(from -1.2deg, #111 0 2.4deg, transparent 2.4deg 30deg);
+    -webkit-mask: radial-gradient(circle, transparent 0 74%, #000 75%);
+    mask: radial-gradient(circle, transparent 0 74%, #000 75%);
   }
   .hand {
     position: absolute;
@@ -681,67 +656,34 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     bottom: 50%;
     transform-origin: 50% 100%;
     transform: translateX(-50%);
-    border-radius: 2px;
-    background: #16181d;
+    border-radius: 1cqw;
+    background: #111;
   }
-  .h-hour { width: 2.4px; height: 26%; }
-  .h-min { width: 1.8px; height: 36%; }
-  .h-sec { width: 1px; height: 40%; background: #fc574e; }
-
-  .tile-photos { background: #fff; }
-  .photos-flower {
-    width: 62%;
-    height: 62%;
+  .h-hour { width: 1cqw; height: 26%; }
+  .h-min { width: 0.8cqw; height: 38%; }
+  .h-sec { width: 0.4cqw; height: 42%; background: #ff9500; }
+  .pin {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.6cqw;
+    height: 1.6cqw;
     border-radius: 50%;
-    background: conic-gradient(#ffcc00, #ff9500, #ff2d55, #af52de, #007aff, #34c759, #a2e04c, #ffcc00);
-    filter: blur(1.2px) saturate(1.15);
-    mask: radial-gradient(circle, transparent 18%, #000 19%);
-    -webkit-mask: radial-gradient(circle, transparent 18%, #000 19%);
+    background: #111;
+    border: 0.3cqw solid #ff9500;
   }
-
-  .tile-notes {
-    background: linear-gradient(180deg, #ffdd66 26%, #fff 26%);
-  }
-  .notes-paper {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    width: 58%;
-    margin-top: 26%;
-  }
-  .notes-paper i {
-    height: 2px;
-    border-radius: 2px;
-    background: #d9d9de;
-  }
-  .notes-paper i:first-child { width: 80%; }
-  .notes-paper i:nth-child(2) { width: 100%; }
-  .notes-paper i:nth-child(3) { width: 62%; }
-
-  .tile-calc { background: #16181d; }
-  .calc-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3px;
-    width: 55%;
-  }
-  .calc-grid i {
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: #8e8e93;
-  }
-  .calc-grid i.op { background: #ff9f0a; }
 
   /* ---------- dots / dock / home bar ---------- */
   .dots {
     display: flex;
     justify-content: center;
-    gap: 7px;
-    padding: 1.5% 0;
+    gap: 2cqw;
+    padding: 2cqw 0;
   }
   .dots i {
-    width: 6px;
-    height: 6px;
+    width: 1.8cqw;
+    height: 1.8cqw;
     border-radius: 50%;
     background: rgba(28, 28, 30, 0.25);
   }
@@ -751,36 +693,35 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 4% 2.5%;
-    padding: 3.5% 5%;
-    border-radius: 26px;
+    margin: 0 3.2cqw 2.4cqw;
+    padding: 3.8cqw 4.6cqw;
+    border-radius: 10.4cqw;
     background: rgba(255, 255, 255, 0.34);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
-  .app-dock .tile { width: min(100%, 56px); }
   .app-dock { animation-delay: 0.5s; }
 
   .homebar {
     width: 36%;
-    height: 4.5px;
+    height: 1.3cqw;
     border-radius: 999px;
-    background: rgba(28, 28, 30, 0.75);
-    margin: 0 auto 2.4%;
+    background: rgba(28, 28, 30, 0.8);
+    margin: 0 auto 2.2cqw;
   }
 
   /* ---------- banner + jiggle ---------- */
   .banner {
     position: absolute;
-    top: 7.5%;
+    top: 14cqw;
     left: 50%;
     transform: translate(-50%, -12px);
     max-width: 84%;
-    padding: 9px 16px;
+    padding: 2.6cqw 4.6cqw;
     border-radius: 999px;
     background: rgba(22, 24, 29, 0.92);
     color: #fff;
-    font-size: 12px;
+    font-size: 3.4cqw;
     font-weight: 550;
     text-align: center;
     opacity: 0;
@@ -796,15 +737,15 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
 
   .done-pill {
     position: absolute;
-    top: 6.8%;
-    right: 5%;
+    top: 13.4cqw;
+    right: 4.6cqw;
     z-index: 8;
     display: none;
-    padding: 5px 14px;
+    padding: 1.5cqw 4cqw;
     border: none;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.85);
-    font-size: 12.5px;
+    font-size: 3.5cqw;
     font-weight: 700;
     color: #16181d;
     cursor: pointer;
@@ -814,18 +755,18 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
 
   .badge {
     position: absolute;
-    top: -6px;
-    left: -6px;
+    top: -1.6cqw;
+    left: -1.6cqw;
     z-index: 2;
     display: none;
-    width: 18px;
-    height: 18px;
+    width: 5.2cqw;
+    height: 5.2cqw;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     background: rgba(28, 28, 30, 0.82);
     color: #fff;
-    font-size: 9px;
+    font-size: 2.6cqw;
     line-height: 1;
   }
   .screen.jiggle .badge { display: flex; }
@@ -862,7 +803,7 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
       padding: 14px 10px 26px;
     }
     .iphone {
-      width: min(78vw, 330px);
+      width: min(80vw, 340px);
     }
   }
 </style>
