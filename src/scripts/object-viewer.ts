@@ -143,9 +143,9 @@ interface ObjectConfig {
 }
 
 const OBJECTS: Record<ObjectKind, ObjectConfig> = {
-  folder: { source: { glb: '/models/folder.glb', setup: (m) => recolor(m, 0x6fbbff) }, pose: [0.15, 0.9, 0], size: 1.35 },
+  folder: { source: { glb: '/models/folder.glb', setup: (m) => recolor(m, 0x6fbbff) }, pose: [0.15, 0.9, -0.14], size: 1.35 },
   iphone: { source: { build: () => buildIphone() }, pose: [0.08, 0.3, 0], size: 1.5 },
-  coffee: { source: { glb: '/models/coffee.glb' }, pose: [0.1, 0.5, 0], size: 1.3 },
+  coffee: { source: { glb: '/models/coffee.glb' }, pose: [0.1, 0.5, 0.1], size: 1.3 },
   macbook: { source: { glb: '/models/macbook.glb', setup: decorateMacbook }, pose: [0.12, 0.6 + Math.PI, 0], size: 1.75 },
 };
 
