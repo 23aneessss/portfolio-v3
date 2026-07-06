@@ -2,23 +2,223 @@
 import Base from '../layouts/Base.astro';
 ---
 
-<Base title="Tech Stack — Aness Bouziani">
-  <main class="placeholder">
-    <h1>Tech Stack</h1>
-    <p>Coming soon.</p>
-    <a href="/">← Back</a>
+<Base title="Tech Stack — Aness Bouziani" description="Languages, frameworks and tools Aness Bouziani works with.">
+  <header class="header">
+    <a class="back" href="/">←</a>
+    <div>
+      <h1 class="title">Tech Stack</h1>
+      <p class="hint">Hover a folder — drag the runaways back before they hit the floor.</p>
+    </div>
+  </header>
+
+  <main class="room">
+    <div class="stations">
+      <div class="station" data-station="languages">
+        <canvas></canvas>
+        <span class="label">Languages</span>
+      </div>
+      <div class="station" data-station="frameworks">
+        <canvas></canvas>
+        <span class="label">Frameworks</span>
+      </div>
+      <div class="station" data-station="tools">
+        <canvas></canvas>
+        <span class="label">Tools</span>
+      </div>
+    </div>
+    <div class="physics-root" id="physics-root"></div>
   </main>
 </Base>
 
+<script>
+  import { mountObject } from '../scripts/object-viewer';
+  import { initStackPhysics, type StackItem } from '../scripts/stack-physics';
+
+  const dev = (path: string) => `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${path}.svg`;
+
+  const STACK: Record<string, StackItem[]> = {
+    languages: [
+      { name: 'JavaScript', icon: dev('javascript/javascript-original') },
+      { name: 'TypeScript', icon: dev('typescript/typescript-original') },
+      { name: 'Python', icon: dev('python/python-original') },
+      { name: 'C', icon: dev('c/c-original') },
+      { name: 'C++', icon: dev('cplusplus/cplusplus-original') },
+      { name: 'Go', icon: dev('go/go-original') },
+      { name: 'Swift', icon: dev('swift/swift-original') },
+      { name: 'Dart', icon: dev('dart/dart-original') },
+      { name: 'HTML5', icon: dev('html5/html5-original') },
+      { name: 'CSS3', icon: dev('css3/css3-original') },
+      { name: 'Java', icon: dev('java/java-original') },
+    ],
+    frameworks: [
+      { name: 'React', icon: dev('react/react-original') },
+      { name: 'Next.js', icon: dev('nextjs/nextjs-original') },
+      { name: 'React Native', icon: dev('react/react-original') },
+      { name: 'Flutter', icon: dev('flutter/flutter-original') },
+      { name: 'SwiftUI', icon: dev('swift/swift-original') },
+      { name: 'Node.js', icon: dev('nodejs/nodejs-original') },
+      { name: 'Express.js', icon: dev('express/express-original') },
+      { name: 'NestJS', icon: dev('nestjs/nestjs-original') },
+      { name: 'FastAPI', icon: dev('fastapi/fastapi-original') },
+      { name: 'Django', icon: dev('django/django-plain') },
+      { name: 'Flask', icon: dev('flask/flask-original') },
+      { name: 'tRPC', icon: dev('trpc/trpc-original') },
+      { name: 'Hono', icon: 'https://cdn.simpleicons.org/hono' },
+      { name: 'Discord.js', icon: dev('discordjs/discordjs-original') },
+    ],
+    tools: [
+      { name: 'Docker', icon: dev('docker/docker-original') },
+      { name: 'Linux', icon: dev('linux/linux-original') },
+      { name: 'Git', icon: dev('git/git-original') },
+      { name: 'GitHub', icon: dev('github/github-original') },
+      { name: 'Figma', icon: dev('figma/figma-original') },
+      { name: 'Adobe Illustrator', icon: dev('illustrator/illustrator-plain') },
+    ],
+  };
+
+  // folder colors per station (macOS-tag pastels, blue ties back to the landing folder)
+  const COLORS: Record<string, number> = {
+    languages: 0x6fbbff,
+    frameworks: 0xb59dfb,
+    tools: 0xffb866,
+  };
+
+  const root = document.getElementById('physics-root')!;
+  const stations = [...document.querySelectorAll<HTMLElement>('.station')].map((el) => {
+    const kind = el.dataset.station!;
+    mountObject(el.querySelector('canvas')!, 'folder', el, { recolor: COLORS[kind] });
+    return { el, items: STACK[kind] };
+  });
+
+  initStackPhysics(root, stations);
+</script>
+
 <style>
-  .placeholder {
-    padding: 48px;
+  .header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 34px 44px 0;
   }
-  h1 {
-    font-size: 2.4rem;
-    letter-spacing: -0.03em;
-  }
-  a {
+  .back {
+    font-size: 26px;
+    font-weight: 700;
     color: #141414;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .back:hover {
+    color: #6fbbff;
+  }
+  .title {
+    margin: 0;
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .hint {
+    margin: 6px 0 0;
+    font-size: 15px;
+    color: #9a9a9a;
+  }
+
+  .room {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+  }
+  .stations {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    align-content: end;
+    max-width: 980px;
+    margin: 0 auto;
+    height: 100%;
+    padding-bottom: 14vh;
+  }
+  .station {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+  }
+  .station canvas {
+    width: 170px;
+    height: 170px;
+  }
+  .station.drop-ready canvas {
+    filter: drop-shadow(0 0 18px rgba(111, 187, 255, 0.85));
+  }
+  .label {
+    font-size: 18px;
+    color: #9a9a9a;
+    transition: color 0.25s ease;
+  }
+  .station:hover .label {
+    color: #333;
+  }
+
+  .physics-root {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    /* let clicks pass through empty space to the folders below */
+    pointer-events: none;
+  }
+  .physics-root :global(.chip) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 62px;
+    height: 62px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    pointer-events: auto;
+    will-change: transform;
+  }
+  .physics-root :global(.chip.dragging) {
+    cursor: grabbing;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
+  }
+  .physics-root :global(.chip.absorbed) {
+    transition: transform 0.25s ease-in;
+  }
+  .physics-root :global(.chip img) {
+    width: 38px;
+    height: 38px;
+    pointer-events: none;
+  }
+  .physics-root :global(.chip-panel) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    max-width: 260px;
+  }
+
+  @media (max-width: 760px) {
+    .header {
+      padding: 22px 24px 0;
+    }
+    .stations {
+      padding-bottom: 10vh;
+    }
+    .station canvas {
+      width: 104px;
+      height: 104px;
+    }
+    .label {
+      font-size: 15px;
+    }
   }
 </style>

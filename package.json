@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "astro": "^5.0.0",
+    "matter-js": "^0.20.0",
     "three": "^0.166.1"
   },
   "devDependencies": {
+    "@types/matter-js": "^0.20.2",
     "@types/three": "^0.166.0"
   }
 }

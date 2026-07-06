@@ -157,8 +157,15 @@ const HOVER_LIFT = 0.12;
 const BOB = 0.06;
 
 /** Mount a floating, rotating object into a canvas. Hover (on `hoverTarget`,
- *  default the canvas's parent link) spins it faster and lifts it. */
-export function mountObject(canvas: HTMLCanvasElement, kind: ObjectKind, hoverTarget?: HTMLElement): void {
+ *  default the canvas's parent link) spins it faster and lifts it.
+ *  `opts.recolor` overrides the model's material color (used by the stack page
+ *  to render the folder in several colors). */
+export function mountObject(
+  canvas: HTMLCanvasElement,
+  kind: ObjectKind,
+  hoverTarget?: HTMLElement,
+  opts?: { recolor?: number }
+): void {
   const cfg = OBJECTS[kind];
   const sizePx = canvas.clientWidth || 220;
 
@@ -228,6 +235,7 @@ export function mountObject(canvas: HTMLCanvasElement, kind: ObjectKind, hoverTa
       glb,
       (gltf) => {
         setup?.(gltf.scene);
+        if (opts?.recolor !== undefined) recolor(gltf.scene, opts.recolor);
         ready(gltf.scene);
       },
       undefined,
