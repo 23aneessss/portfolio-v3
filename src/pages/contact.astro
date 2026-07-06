@@ -328,16 +328,15 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     --r: 16.4cqw; /* outer corner radius */
     position: relative;
     container-type: inline-size;
-    width: clamp(280px, 38vh, 355px);
+    width: clamp(300px, 44vh, 410px);
     aspect-ratio: 9 / 19.2;
-    /* titanium band */
-    background: linear-gradient(145deg, #6a6c72, #3a3b40 28%, #55575d 52%, #2c2d31 78%, #4a4c52);
+    /* clean black frame */
+    background: #050506;
     border-radius: 16.4cqw;
     padding: 1.1cqw;
     box-shadow:
       0 40px 90px rgba(0, 0, 0, 0.35),
-      0 6px 22px rgba(0, 0, 0, 0.22),
-      inset 0 0 1px 1px rgba(255, 255, 255, 0.25);
+      0 6px 22px rgba(0, 0, 0, 0.22);
     transition: transform 0.25s ease;
     transform-style: preserve-3d;
     animation: arrive 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -359,7 +358,7 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
   }
   .side-btn {
     position: absolute;
-    background: linear-gradient(90deg, #7c7e84, #46474c);
+    background: #1c1d20;
     border-radius: 2px;
   }
   .side-action { left: -0.8cqw; top: 17.5%; width: 0.9cqw; height: 3.6%; }
@@ -803,7 +802,7 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
       padding: 14px 10px 26px;
     }
     .iphone {
-      width: min(80vw, 340px);
+      width: min(84vw, 370px);
     }
   }
 </style>
