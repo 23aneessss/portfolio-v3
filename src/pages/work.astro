@@ -2,23 +2,773 @@
 import Base from '../layouts/Base.astro';
 ---
 
-<Base title="Work — Aness Bouziani">
-  <main class="placeholder">
-    <h1>Work</h1>
-    <p>Coming soon.</p>
-    <a href="/">← Back</a>
+<Base title="Work — Aness Bouziani" description="Projects by Aness Bouziani — explore them through a terminal.">
+  <header class="header">
+    <a class="back" href="/">←</a>
+    <div>
+      <h1 class="title">Work</h1>
+      <p class="hint">A terminal. You know what to do.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="term" id="term">
+      <div class="term-bar">
+        <span class="dot dot-r"></span>
+        <span class="dot dot-y"></span>
+        <span class="dot dot-g"></span>
+        <span class="term-title">visitor@aness — zsh</span>
+      </div>
+      <div class="term-body" id="term-body">
+        <div class="term-out" id="term-out"></div>
+        <div class="term-line" id="term-line"></div>
+        <input
+          id="term-input"
+          class="term-input"
+          type="text"
+          autocomplete="off"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+          aria-label="terminal input"
+        />
+      </div>
+    </div>
   </main>
+
+  <!-- cat <project> popup -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" id="modal-card">
+      <div class="modal-bar">
+        <span class="modal-path" id="modal-path">~/projects/…</span>
+        <button class="modal-close" id="modal-close" aria-label="close">✕</button>
+      </div>
+      <div class="modal-content" id="modal-content"></div>
+    </div>
+  </div>
 </Base>
 
+<script>
+  interface Project {
+    name: string;
+    desc: string;
+    lang: string;
+    tech: string[];
+    repo: string;
+    live?: string;
+  }
+
+  const GH = 'https://github.com/23aneessss';
+
+  const PROJECTS: Project[] = [
+    {
+      name: 'macagentkit',
+      desc: 'The low-level Swift plumbing every macOS automation tool & AI agent re-implements badly. Robust Accessibility (AX) traversal on modern macOS, the TCC permission maze handled, Control Center, Do Not Disturb & Shortcuts — zero dependencies.',
+      lang: 'Swift',
+      tech: ['Swift', 'Accessibility API', 'macOS'],
+      repo: `${GH}/MacAgentKit`,
+    },
+    {
+      name: 'appxray',
+      desc: 'Independent, offline privacy & capability auditor for macOS apps. Drop in any .app — see sandbox status, entitlements, private frameworks, notarization, and background helpers. Reads from the binary, not from self-declared labels.',
+      lang: 'Swift',
+      tech: ['Swift', 'macOS', 'Security'],
+      repo: `${GH}/AppXray`,
+    },
+    {
+      name: 'focusnotch',
+      desc: "A Pomodoro timer that lives in your MacBook's notch. Glanceable countdown & sessions, hover to expand, one-tap Do Not Disturb.",
+      lang: 'Swift',
+      tech: ['SwiftUI', 'macOS 14+'],
+      repo: `${GH}/FocusNotch`,
+    },
+    {
+      name: 'sequence',
+      desc: "A GitHub-style contribution-graph habit tracker for iOS. Every day is a square; build streaks you don't want to break. Local-first.",
+      lang: 'Swift',
+      tech: ['SwiftUI', 'SwiftData', 'iOS'],
+      repo: `${GH}/Sequence`,
+    },
+    {
+      name: 'brume',
+      desc: 'A calm, hand-drawn iOS journal for writing and sketching on one page. Private, local-only.',
+      lang: 'Swift',
+      tech: ['SwiftUI', 'PencilKit', 'iOS'],
+      repo: `${GH}/Brume`,
+    },
+    {
+      name: 'focustime',
+      desc: 'An offline macOS Pomodoro timer designed as a small floating utility window with a pixel-art inspired look, plus a WidgetKit widget with glanceable daily stats.',
+      lang: 'Swift',
+      tech: ['Swift', 'WidgetKit', 'macOS'],
+      repo: `${GH}/Pomodoro-macOS`,
+    },
+    {
+      name: 'jo3t',
+      desc: 'A Flutter mobile app focused on helping users discover places, food, and local experiences in Algeria — simple, fast, and community-driven.',
+      lang: 'Dart',
+      tech: ['Flutter', 'Dart', 'Mobile'],
+      repo: `${GH}/jo3t-app`,
+    },
+    {
+      name: 'planora',
+      desc: 'A mobile-first, offline-first student planner: tasks, calendar planning, Pomodoro focus sessions, grades, and optional cloud sync. Android & iOS.',
+      lang: 'Dart',
+      tech: ['Flutter', 'Dart', 'Offline-first'],
+      repo: `${GH}/student-planner`,
+    },
+    {
+      name: 'doctorcom',
+      desc: 'AI-powered medical cabinet platform for managing patient records, appointments, and clinic workflows. Smart automation and secure data handling so healthcare professionals focus on care, not administration.',
+      lang: 'TypeScript',
+      tech: ['TypeScript', 'AI', 'Full-stack'],
+      repo: `${GH}/doctorcom`,
+    },
+    {
+      name: 'nearby',
+      desc: 'A location-based marketplace connecting clients with professional services around them — interactive maps, real-time booking, and dedicated management dashboards.',
+      lang: 'TypeScript',
+      tech: ['TypeScript', 'Maps', 'Real-time'],
+      repo: `${GH}/Nearby-App`,
+    },
+    {
+      name: 'port-flow',
+      desc: 'A booking platform for port terminals with role-based flows (admin, operator, transporter, driver): slot requests, capacity management, approvals, notifications and QR codes.',
+      lang: 'TypeScript',
+      tech: ['TypeScript', 'PostgreSQL', 'QR'],
+      repo: `${GH}/Port-Flow`,
+    },
+    {
+      name: 'movio',
+      desc: 'A mobile app to discover movies, save favorites, mark what you have watched and manage your profile.',
+      lang: 'TypeScript',
+      tech: ['React Native', 'TypeScript'],
+      repo: `${GH}/Movio`,
+    },
+  ];
+
+  const out = document.getElementById('term-out')!;
+  const line = document.getElementById('term-line')!;
+  const input = document.getElementById('term-input')! as HTMLInputElement;
+  const body = document.getElementById('term-body')!;
+  const term = document.getElementById('term')!;
+  const modal = document.getElementById('modal')!;
+  const modalCard = document.getElementById('modal-card')!;
+  const modalContent = document.getElementById('modal-content')!;
+  const modalPath = document.getElementById('modal-path')!;
+
+  let cwd: '~' | '~/projects' = '~';
+  const history: string[] = [];
+  let histIdx = -1;
+
+  const esc = (s: string) =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  const promptHTML = () =>
+    `<span class="p-user">visitor@aness</span><span class="p-sep">:</span><span class="p-path">${cwd}</span><span class="p-sep">$</span>&nbsp;`;
+
+  const scroll = () => (body.scrollTop = body.scrollHeight);
+
+  const print = (html: string, cls = '') => {
+    const div = document.createElement('div');
+    div.className = `row ${cls}`;
+    div.innerHTML = html;
+    out.appendChild(div);
+    scroll();
+  };
+
+  const printCmd = (cmd: string) => print(promptHTML() + `<span class="echo">${esc(cmd)}</span>`);
+  const printErr = (msg: string) => print(esc(msg), 'err');
+  const printHint = (msg: string) => print(`<span class="dim">hint:</span> ${msg}`, 'hint');
+
+  /** clickable command — clicking it types & runs it */
+  const cmdLink = (cmd: string, label = cmd) =>
+    `<button class="cmd-link" data-cmd="${esc(cmd)}">${esc(label)}</button>`;
+
+  const contextHint = () => {
+    if (cwd === '~') printHint(`type ${cmdLink('cd projects')} to see my work`);
+    else printHint(`type ${cmdLink('ls')} to list projects, then <span class="code">cat &lt;name&gt;</span> to open one`);
+  };
+
+  // ---------- commands ----------
+
+  const doLs = (arg?: string) => {
+    const target = arg?.replace(/\/$/, '');
+    if (cwd === '~' && (!target || target === '.' || target === '~')) {
+      print(`<span class="dir">projects/</span> &nbsp;<span class="dim">readme.txt</span>`);
+      printHint(`${cmdLink('cd projects')} then ${cmdLink('ls')}`);
+      return;
+    }
+    if (target && target !== 'projects' && target !== '.' && cwd === '~') {
+      printErr(`ls: ${target}: No such file or directory`);
+      printHint(`try ${cmdLink('ls projects')}`);
+      return;
+    }
+    // listing the projects
+    const cols = PROJECTS.map((p) => cmdLink(`cat ${p.name}`, p.name)).join('');
+    print(`<div class="ls-grid">${cols}</div>`);
+    printHint(`open one with <span class="code">cat &lt;name&gt;</span> — e.g. ${cmdLink(`cat ${PROJECTS[0].name}`)}`);
+  };
+
+  const doCd = (arg?: string) => {
+    const t = (arg ?? '~').replace(/\/$/, '');
+    if (t === '~' || t === '' || t === '..' && cwd === '~/projects') {
+      cwd = t === '..' || t === '~' || t === '' ? '~' : cwd;
+      return;
+    }
+    if (t === 'projects' || t === '~/projects' || t === './projects') {
+      if (cwd === '~/projects') {
+        printErr(`cd: already in ~/projects`);
+        printHint(`type ${cmdLink('ls')} to list projects`);
+        return;
+      }
+      cwd = '~/projects';
+      print(`<span class="dim">→ entered</span> <span class="p-path">~/projects</span> <span class="dim">— ${PROJECTS.length} projects inside</span>`);
+      printHint(`type ${cmdLink('ls')} to list them`);
+      return;
+    }
+    if (t === '..') {
+      cwd = '~';
+      return;
+    }
+    printErr(`cd: no such directory: ${t}`);
+    printHint(`the only place worth visiting is ${cmdLink('cd projects')}`);
+  };
+
+  const findProject = (name: string) =>
+    PROJECTS.find((p) => p.name === name.toLowerCase().replace(/^(\.\/|~\/projects\/|projects\/)/, ''));
+
+  const closest = (name: string) => {
+    const n = name.toLowerCase();
+    return PROJECTS.find((p) => p.name.startsWith(n) || p.name.includes(n));
+  };
+
+  const doCat = (arg?: string) => {
+    if (!arg) {
+      printErr('cat: missing operand');
+      printHint(`usage: <span class="code">cat &lt;project&gt;</span> — run ${cmdLink('ls')} to see the names`);
+      return;
+    }
+    if (arg === 'readme.txt' && cwd === '~') {
+      print(`<span class="dim">Hi, I'm Aness — full-stack & mobile developer.<br/>Everything I build lives in</span> <span class="dir">projects/</span><span class="dim">. Go take a look.</span>`);
+      printHint(`${cmdLink('cd projects')}`);
+      return;
+    }
+    if ((arg === 'projects' || arg === 'projects/') && cwd === '~') {
+      printErr('cat: projects: Is a directory');
+      printHint(`enter it first: ${cmdLink('cd projects')}`);
+      return;
+    }
+    const inProjects = cwd === '~/projects' || /^(projects|~\/projects)\//.test(arg);
+    if (!inProjects) {
+      printErr(`cat: ${arg}: No such file or directory`);
+      printHint(`my projects live in <span class="p-path">~/projects</span> — type ${cmdLink('cd projects')} first`);
+      return;
+    }
+    const p = findProject(arg);
+    if (!p) {
+      printErr(`cat: ${arg.replace(/^.*\//, '')}: No such project`);
+      const near = closest(arg.replace(/^.*\//, ''));
+      if (near) printHint(`did you mean ${cmdLink(`cat ${near.name}`)}? run ${cmdLink('ls')} to see everything`);
+      else printHint(`run ${cmdLink('ls')} to see the available projects`);
+      return;
+    }
+    print(`<span class="dim">→ opening</span> <span class="p-path">${esc(p.name)}</span> <span class="dim">…</span>`);
+    openModal(p);
+  };
+
+  const doHelp = () => {
+    print(
+      [
+        `<span class="code">cd projects</span>   <span class="dim">enter the projects folder</span>`,
+        `<span class="code">ls</span>            <span class="dim">list what's inside</span>`,
+        `<span class="code">cat &lt;name&gt;</span>    <span class="dim">open a project (info, repo, live link)</span>`,
+        `<span class="code">pwd</span>           <span class="dim">where am I?</span>`,
+        `<span class="code">clear</span>         <span class="dim">clean the screen</span>`,
+        `<span class="code">exit</span>          <span class="dim">back to the homepage</span>`,
+      ].join('<br/>')
+    );
+    printHint(`↑/↓ history · Tab autocomplete · click any ${cmdLink('ls', 'highlighted')} command to run it`);
+  };
+
+  const run = (raw: string) => {
+    const cmdline = raw.trim();
+    printCmd(raw);
+    if (!cmdline) return;
+    history.push(cmdline);
+    histIdx = history.length;
+
+    const [cmd, ...args] = cmdline.split(/\s+/);
+    const arg = args.join(' ');
+
+    switch (cmd.toLowerCase()) {
+      case 'help':
+      case '?':
+      case 'man':
+        doHelp();
+        break;
+      case 'ls':
+      case 'll':
+      case 'dir':
+        doLs(args[0]);
+        break;
+      case 'cd':
+        doCd(args[0]);
+        break;
+      case 'cat':
+      case 'open':
+      case 'less':
+      case 'more':
+      case 'vim':
+      case 'nano':
+        doCat(args[0]);
+        break;
+      case 'pwd':
+        print(esc(cwd === '~' ? '/home/visitor' : '/home/visitor/projects'));
+        break;
+      case 'whoami':
+        print('visitor <span class="dim">— a person with excellent taste in portfolios</span>');
+        break;
+      case 'clear':
+        out.innerHTML = '';
+        break;
+      case 'sudo':
+        printErr('visitor is not in the sudoers file. This incident will be reported.');
+        printHint(`no root needed here — just ${cmdLink('cd projects')}`);
+        break;
+      case 'rm':
+        printErr(`rm: permission denied — these projects took too long to build`);
+        break;
+      case 'exit':
+      case 'logout':
+        print('<span class="dim">logout — see you around.</span>');
+        setTimeout(() => (window.location.href = '/'), 600);
+        break;
+      case 'echo':
+        print(esc(arg));
+        break;
+      default:
+        printErr(`zsh: command not found: ${cmd}`);
+        contextHint();
+    }
+  };
+
+  // ---------- popup ----------
+
+  const openModal = (p: Project) => {
+    modalPath.textContent = `~/projects/${p.name}`;
+    modalContent.innerHTML = `
+      <h2 class="m-name">${esc(p.name)}</h2>
+      <p class="m-desc">${esc(p.desc)}</p>
+      <div class="m-tech">${p.tech.map((t) => `<span class="m-chip">${esc(t)}</span>`).join('')}</div>
+      <div class="m-links">
+        <a class="m-btn" href="${esc(p.repo)}" target="_blank" rel="noopener">↗ GitHub repo</a>
+        ${p.live ? `<a class="m-btn m-btn-live" href="${esc(p.live)}" target="_blank" rel="noopener">↗ Live app</a>` : `<span class="m-offline">not deployed — lives in the repo</span>`}
+      </div>`;
+    modal.hidden = false;
+    requestAnimationFrame(() => modal.classList.add('show'));
+  };
+
+  const closeModal = () => {
+    modal.classList.remove('show');
+    setTimeout(() => {
+      modal.hidden = true;
+      input.focus();
+    }, 180);
+  };
+
+  document.getElementById('modal-close')!.addEventListener('click', closeModal);
+  document.getElementById('modal-backdrop')!.addEventListener('click', closeModal);
+
+  // ---------- input line rendering ----------
+
+  const renderLine = () => {
+    const v = input.value;
+    const at = input.selectionStart ?? v.length;
+    line.innerHTML =
+      promptHTML() +
+      `<span class="echo">${esc(v.slice(0, at))}</span>` +
+      `<span class="cursor">${esc(v.slice(at, at + 1) || ' ')}</span>` +
+      `<span class="echo">${esc(v.slice(at + 1))}</span>`;
+    scroll();
+  };
+
+  const COMMANDS = ['help', 'ls', 'cd', 'cat', 'pwd', 'clear', 'whoami', 'exit', 'echo'];
+
+  const complete = () => {
+    const v = input.value;
+    const parts = v.split(/\s+/);
+    const last = parts[parts.length - 1];
+    if (!last) return;
+    let pool: string[] = [];
+    if (parts.length === 1) pool = COMMANDS;
+    else if (parts[0] === 'cd') pool = cwd === '~' ? ['projects'] : ['..'];
+    else if (parts[0] === 'cat' || parts[0] === 'open')
+      pool = cwd === '~/projects' ? PROJECTS.map((p) => p.name) : ['readme.txt', 'projects'];
+    const hits = pool.filter((c) => c.startsWith(last.toLowerCase()));
+    if (hits.length === 1) {
+      parts[parts.length - 1] = hits[0];
+      input.value = parts.join(' ') + (parts.length === 1 ? ' ' : '');
+      input.setSelectionRange(input.value.length, input.value.length);
+    } else if (hits.length > 1) {
+      print(hits.map((h) => `<span class="dim">${esc(h)}</span>`).join('&nbsp;&nbsp;'));
+    }
+  };
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const v = input.value;
+      input.value = '';
+      run(v);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (histIdx > 0) {
+        histIdx--;
+        input.value = history[histIdx] ?? '';
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (histIdx < history.length) {
+        histIdx++;
+        input.value = history[histIdx] ?? '';
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      complete();
+    } else if (e.key === 'l' && e.ctrlKey) {
+      e.preventDefault();
+      out.innerHTML = '';
+    } else if (e.key === 'c' && e.ctrlKey) {
+      e.preventDefault();
+      printCmd(input.value + '^C');
+      input.value = '';
+    }
+    requestAnimationFrame(renderLine);
+  });
+  input.addEventListener('input', renderLine);
+  document.addEventListener('selectionchange', renderLine);
+
+  // focus management — clicking anywhere in the terminal focuses the input
+  term.addEventListener('mousedown', (e) => {
+    const t = e.target as HTMLElement;
+    if (t.closest('.cmd-link') || t.closest('a')) return;
+    // let the user select text; only refocus if no selection is being made
+    setTimeout(() => {
+      if (!window.getSelection()?.toString()) input.focus();
+    }, 0);
+  });
+
+  // clickable commands printed in the output
+  out.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('.cmd-link') as HTMLElement | null;
+    if (!btn) return;
+    input.value = '';
+    run(btn.dataset.cmd!);
+    input.focus();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.hidden) closeModal();
+  });
+  modalCard.addEventListener('click', (e) => e.stopPropagation());
+
+  // ---------- boot ----------
+
+  print(
+    `<span class="banner">aness.sh</span> <span class="dim">— portfolio terminal</span><br/>` +
+      `<span class="dim">Last login: just now, from somewhere on the internet</span>`
+  );
+  print(`my work lives in <span class="dir">~/projects</span> — type ${cmdLink('cd projects')} to get in, or ${cmdLink('help')} if you're lost.`);
+  renderLine();
+  input.focus();
+</script>
+
 <style>
-  .placeholder {
-    padding: 48px;
+  .header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 34px 44px 0;
   }
-  h1 {
-    font-size: 2.4rem;
-    letter-spacing: -0.03em;
-  }
-  a {
+  .back {
+    font-size: 26px;
+    font-weight: 700;
     color: #141414;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .back:hover {
+    color: #6fbbff;
+  }
+  .title {
+    margin: 0;
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .hint {
+    margin: 6px 0 0;
+    font-size: 15px;
+    color: #9a9a9a;
+  }
+
+  .wrap {
+    flex: 1;
+    display: flex;
+    padding: 26px clamp(16px, 4vw, 44px) 40px;
+  }
+
+  /* ---------- terminal window ---------- */
+  .term {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 1060px;
+    margin: 0 auto;
+    min-height: 0;
+    background: #16181d;
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25), 0 2px 10px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+  }
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    background: #23262d;
+    position: relative;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .term-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Mono', monospace;
+    font-size: 12.5px;
+    color: #8a8f98;
+  }
+  .term-body {
+    flex: 1;
+    min-height: 420px;
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+    padding: 18px 20px 24px;
+    font-family: ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Mono', monospace;
+    font-size: 14px;
+    line-height: 1.75;
+    color: #d7dae0;
+    cursor: text;
+  }
+  .term-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+  }
+
+  .term-body :global(.row) {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .term-body :global(.err) { color: #ff7b72; }
+  .term-body :global(.hint) { color: #8a8f98; }
+  .term-body :global(.dim) { color: #8a8f98; }
+  .term-body :global(.echo) { color: #d7dae0; white-space: pre-wrap; }
+  .term-body :global(.banner) { color: #6fbbff; font-weight: 700; }
+  .term-body :global(.p-user) { color: #7ee787; }
+  .term-body :global(.p-path) { color: #6fbbff; }
+  .term-body :global(.p-sep) { color: #8a8f98; }
+  .term-body :global(.dir) { color: #6fbbff; font-weight: 700; }
+  .term-body :global(.code) {
+    color: #ffd58a;
+  }
+  .term-body :global(.cmd-link) {
+    font: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    color: #ffd58a;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(255, 213, 138, 0.4);
+    cursor: pointer;
+  }
+  .term-body :global(.cmd-link:hover) {
+    color: #ffe4ae;
+    text-decoration-color: currentColor;
+  }
+  .term-body :global(.ls-grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 2px 18px;
+    padding: 2px 0;
+  }
+  .term-body :global(.ls-grid .cmd-link) {
+    text-align: left;
+    text-decoration: none;
+    color: #7ee787;
+  }
+  .term-body :global(.ls-grid .cmd-link:hover) {
+    text-decoration: underline;
+  }
+
+  .term-line :global(.cursor) {
+    display: inline-block;
+    min-width: 8.4px;
+    background: #d7dae0;
+    color: #16181d;
+    animation: blink 1.1s steps(1) infinite;
+    white-space: pre;
+  }
+  @keyframes blink {
+    50% { background: transparent; color: #d7dae0; }
+  }
+
+  /* ---------- cat popup ---------- */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .modal.show { opacity: 1; }
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 12, 16, 0.55);
+    backdrop-filter: blur(3px);
+  }
+  .modal-card {
+    position: relative;
+    width: min(460px, calc(100vw - 40px));
+    background: #1b1e24;
+    border: 1px solid #2c3038;
+    border-radius: 14px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    transform: translateY(8px) scale(0.98);
+    transition: transform 0.18s ease;
+    font-family: ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Mono', monospace;
+  }
+  .modal.show .modal-card { transform: translateY(0) scale(1); }
+  .modal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: #23262d;
+    border-bottom: 1px solid #2c3038;
+  }
+  .modal-path {
+    font-size: 12.5px;
+    color: #6fbbff;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    color: #8a8f98;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+  .modal-close:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .modal-content {
+    padding: 20px 22px 22px;
+  }
+  .modal-content :global(.m-name) {
+    margin: 0 0 10px;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  .modal-content :global(.m-name)::before {
+    content: '# ';
+    color: #6fbbff;
+  }
+  .modal-content :global(.m-desc) {
+    margin: 0 0 16px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #b8bdc6;
+  }
+  .modal-content :global(.m-tech) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .modal-content :global(.m-chip) {
+    font-size: 11.5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(111, 187, 255, 0.12);
+    color: #6fbbff;
+    border: 1px solid rgba(111, 187, 255, 0.25);
+  }
+  .modal-content :global(.m-links) {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .modal-content :global(.m-btn) {
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: #fff;
+    color: #16181d;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .modal-content :global(.m-btn:hover) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(255, 255, 255, 0.15);
+  }
+  .modal-content :global(.m-btn-live) {
+    background: #6fbbff;
+  }
+  .modal-content :global(.m-offline) {
+    font-size: 12px;
+    color: #6d727b;
+  }
+
+  @media (max-width: 760px) {
+    .header {
+      padding: 22px 24px 0;
+    }
+    .wrap {
+      padding: 18px 12px 24px;
+    }
+    .term-body {
+      font-size: 12.5px;
+      padding: 14px 12px 18px;
+      min-height: 340px;
+      max-height: calc(100vh - 200px);
+    }
+    .term-body :global(.ls-grid) {
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
   }
 </style>
