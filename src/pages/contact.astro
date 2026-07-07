@@ -242,6 +242,8 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') exitJiggle();
   });
+  // long-press should trigger jiggle mode, not the native context menu
+  screen.addEventListener('contextmenu', (e) => e.preventDefault());
 
   // while jiggling: block navigation, allow "deleting"
   screen.addEventListener(
