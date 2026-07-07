@@ -87,15 +87,25 @@ export function mountObject(
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
   const scene = new THREE.Scene();
-  if (cfg.env) scene.environment = envMap(renderer);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-  scene.add(new THREE.AmbientLight(0xffffff, 1.1));
-  const key = new THREE.DirectionalLight(0xffffff, 1.6);
-  key.position.set(3, 5, 4);
-  scene.add(key);
-  const fill = new THREE.DirectionalLight(0xffffff, 0.5);
-  fill.position.set(-4, 2, -3);
-  scene.add(fill);
+  if (cfg.env) {
+    // PBR models: the environment IS the lighting — adding the analytic
+    // lights on top blows out the whites. Filmic tonemapping ≈ Sketchfab.
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    scene.environment = envMap(renderer);
+    const key = new THREE.DirectionalLight(0xffffff, 0.5);
+    key.position.set(3, 5, 4);
+    scene.add(key);
+  } else {
+    scene.add(new THREE.AmbientLight(0xffffff, 1.1));
+    const key = new THREE.DirectionalLight(0xffffff, 1.6);
+    key.position.set(3, 5, 4);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xffffff, 0.5);
+    fill.position.set(-4, 2, -3);
+    scene.add(fill);
+  }
   camera.position.set(0, 0.45, 3.2);
   camera.lookAt(0, 0, 0);
 

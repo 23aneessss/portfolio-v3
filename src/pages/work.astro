@@ -638,6 +638,11 @@ import Base from '../layouts/Base.astro';
   }
 
   /* ---------- cat popup ---------- */
+  .modal[hidden] {
+    /* display:flex below would override the hidden attribute — without this,
+       an invisible full-page overlay swallows every click (e.g. the ← link) */
+    display: none;
+  }
   .modal {
     position: fixed;
     inset: 0;
