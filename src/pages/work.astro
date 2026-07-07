@@ -22,6 +22,7 @@ import Base from '../layouts/Base.astro';
       <div class="term-body" id="term-body">
         <div class="term-out" id="term-out" aria-live="polite"></div>
         <div class="term-line" id="term-line"></div>
+        <img class="term-cry" id="term-cry" src="/avatar-cry-head.webp" alt="" aria-hidden="true" />
         <input
           id="term-input"
           class="term-input"
@@ -334,11 +335,19 @@ import Base from '../layouts/Base.astro';
         out.innerHTML = '';
         break;
       case 'sudo':
-        printErr('visitor is not in the sudoers file. This incident will be reported.');
-        printHint(`no root needed here — just ${cmdLink('cd projects')}`);
+        if (args[0] === 'rm') {
+          printErr('rm: still no. especially not with sudo.');
+          print('<span class="dim">he saw what you typed.</span>');
+          cry();
+        } else {
+          printErr('visitor is not in the sudoers file. This incident will be reported.');
+          printHint(`no root needed here — just ${cmdLink('cd projects')}`);
+        }
         break;
       case 'rm':
-        printErr(`rm: permission denied — these projects took too long to build`);
+        printErr('rm: operation not permitted (emotional reasons)');
+        print('<span class="dim">these projects took too long to build. look at him.</span>');
+        cry();
         break;
       case 'exit':
       case 'logout':

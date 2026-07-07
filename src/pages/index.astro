@@ -20,6 +20,7 @@ const GITHUB_URL = 'https://github.com/23aneessss';
       <span class="avatar-wrap">
         <img class="avatar" src="/avatar.webp" alt="Aness Bouziani" fetchpriority="high" />
         <img class="avatar avatar--smile" src="/avatar-smile.webp" alt="" aria-hidden="true" />
+        <img class="avatar avatar--cry" src="/avatar-cry.webp" alt="" aria-hidden="true" />
         <span class="bubble" aria-hidden="true">hello! 👋</span>
       </span>
       <span class="label">About</span>
@@ -54,6 +55,24 @@ const GITHUB_URL = 'https://github.com/23aneessss';
     const kind = el.dataset.object as ObjectKind;
     if (canvas) mountObject(canvas, kind, el, { fit: FIT[kind] });
   }
+
+  // exit-intent: reach for the tab bar and he notices. once per session —
+  // heartbreak loses its power when repeated.
+  const avatarItem = document.querySelector<HTMLElement>('.item--avatar')!;
+  const bubble = avatarItem.querySelector<HTMLElement>('.bubble')!;
+  let recover = 0;
+  document.addEventListener('mouseout', (e) => {
+    if (e.relatedTarget || e.clientY > 40) return;
+    if (sessionStorage.getItem('saw-him-cry')) return;
+    sessionStorage.setItem('saw-him-cry', '1');
+    avatarItem.classList.add('leaving');
+    bubble.textContent = "wait — don't go 😭";
+    clearTimeout(recover);
+    recover = window.setTimeout(() => {
+      avatarItem.classList.remove('leaving');
+      bubble.textContent = 'hello! 👋';
+    }, 3200);
+  });
 </script>
 
 <style>
@@ -134,6 +153,22 @@ const GITHUB_URL = 'https://github.com/23aneessss';
   }
   .item--avatar:hover .avatar--smile {
     opacity: 1;
+  }
+  .avatar--cry {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  /* exit-intent: cry image sits on top of base + smile, bubble forced visible */
+  .item--avatar.leaving .avatar--cry {
+    opacity: 1;
+  }
+  .item--avatar.leaving .bubble {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 
   /* speech bubble — pops next to the head on hover */
