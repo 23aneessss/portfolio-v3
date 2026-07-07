@@ -52,8 +52,29 @@ import Base from '../layouts/Base.astro';
     justify-content: center;
     padding: 24px;
   }
-  .term {
+  .term-holder {
+    position: relative;
     width: min(560px, 100%);
+  }
+  /* he peeks over the window, mourning the missing page */
+  .cry-peek {
+    position: absolute;
+    top: -58px;
+    right: 36px;
+    width: 96px;
+    transform: rotate(-5deg);
+    animation: mourn 3.4s ease-in-out infinite;
+  }
+  @keyframes mourn {
+    50% { transform: rotate(-5deg) translateY(6px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cry-peek { animation: none; }
+  }
+  .term {
+    position: relative;
+    z-index: 1;
+    width: 100%;
     background: #16181d;
     border-radius: 14px;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25), 0 2px 10px rgba(0, 0, 0, 0.12);
