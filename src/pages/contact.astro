@@ -380,6 +380,9 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
     display: flex;
     flex-direction: column;
     user-select: none;
+    /* long-press = jiggle mode, not the iOS text/link callout */
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 
   /* ---------- Dynamic Island + status bar (shared band, iOS proportions) ---------- */

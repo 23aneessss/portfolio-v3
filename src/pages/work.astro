@@ -577,6 +577,8 @@ import Base from '../layouts/Base.astro';
     pointer-events: none;
     width: 1px;
     height: 1px;
+    /* iOS zooms the page when a focused input's font is < 16px */
+    font-size: 16px;
   }
 
   .term-body :global(.row) {

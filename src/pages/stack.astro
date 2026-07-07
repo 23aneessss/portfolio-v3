@@ -34,7 +34,8 @@ import Base from '../layouts/Base.astro';
   import { mountObject } from '../scripts/object-viewer';
   import { initStackPhysics, type StackItem } from '../scripts/stack-physics';
 
-  const dev = (path: string) => `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${path}.svg`;
+  // icons are self-hosted (downloaded from devicon/simpleicons) — no CDN dependency
+  const dev = (path: string) => `/icons/stack/${path.split('/').pop()}.svg`;
 
   const STACK: Record<string, StackItem[]> = {
     languages: [
@@ -63,7 +64,7 @@ import Base from '../layouts/Base.astro';
       { name: 'Django', icon: dev('django/django-plain') },
       { name: 'Flask', icon: dev('flask/flask-original') },
       { name: 'tRPC', icon: dev('trpc/trpc-original') },
-      { name: 'Hono', icon: 'https://cdn.simpleicons.org/hono' },
+      { name: 'Hono', icon: '/icons/stack/hono.svg' },
       { name: 'Discord.js', icon: dev('discordjs/discordjs-original') },
     ],
     tools: [
