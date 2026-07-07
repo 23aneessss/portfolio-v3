@@ -541,6 +541,7 @@ import Base from '../layouts/Base.astro';
 
   /* ---------- terminal window ---------- */
   .term {
+    position: relative;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -551,6 +552,20 @@ import Base from '../layouts/Base.astro';
     border-radius: 14px;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25), 0 2px 10px rgba(0, 0, 0, 0.12);
     overflow: hidden;
+  }
+  /* rm defense: he slides up from the corner, judging you */
+  .term-cry {
+    position: absolute;
+    right: 22px;
+    bottom: 0;
+    width: 96px;
+    transform: translateY(105%);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .term.crying .term-cry {
+    transform: translateY(4%);
   }
   .term-bar {
     display: flex;
