@@ -293,6 +293,14 @@ import Base from '../layouts/Base.astro';
     printHint(`↑/↓ history · Tab autocomplete · click any ${cmdLink('ls', 'highlighted')} command to run it`);
   };
 
+  // he rises from the bottom corner when you try to delete his life's work
+  let cryTimer = 0;
+  const cry = () => {
+    term.classList.add('crying');
+    clearTimeout(cryTimer);
+    cryTimer = window.setTimeout(() => term.classList.remove('crying'), 3200);
+  };
+
   const run = (raw: string) => {
     const cmdline = raw.trim();
     printCmd(raw);
