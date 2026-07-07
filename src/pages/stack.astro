@@ -188,6 +188,8 @@ import Base from '../layouts/Base.astro';
     cursor: grab;
     pointer-events: auto;
     will-change: transform;
+    /* dragging a chip must not scroll/bounce the page on touch */
+    touch-action: none;
   }
   .physics-root :global(.chip.dragging) {
     cursor: grabbing;
