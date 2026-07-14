@@ -1,265 +1,269 @@
 ---
 import Base from '../layouts/Base.astro';
 
-// journey data pulled from the old portfolio
-const JOURNEY = [
-  {
-    when: '2023',
-    tag: 'EDUCATION',
-    title: 'First Baccalaureate',
-    body: 'The beginning of the higher-education journey — first key to engineering school.',
-  },
-  {
-    when: '2023 – 2024',
-    tag: 'EDUCATION',
-    title: 'Autonomous Systems Studies',
-    body: 'National Higher School of Autonomous Systems.',
-  },
-  {
-    when: '2024',
-    tag: 'ACHIEVEMENT',
-    title: 'Second Baccalaureate',
-    body: 'Yes — a second one. Achievement unlocked ×2 🏆',
-  },
-  {
-    when: '2024 – now',
-    tag: 'EDUCATION',
-    title: 'Computer Science @ ESI Algiers',
-    body: 'National Higher School of Computer Science — 2CP, crafting systems & useful products.',
-  },
-  {
-    when: '2024 – now',
-    tag: 'CLUB',
-    title: 'Active Member — ETIC Club',
-    body: 'Building, organizing and shipping with the club.',
-  },
-  {
-    when: '2026',
-    tag: 'EVENT',
-    title: 'Event Coordinator — S2EE 17',
-    body: 'Coordinating one of ETIC Club’s flagship events.',
-  },
-];
+// real social handle (kept in sync with contact.astro)
+const GH = 'https://github.com/23aneessss';
 
-const STORAGE = [
-  { label: 'Code', pct: 38, color: '#6fbbff', note: 'TypeScript, Swift, Dart & friends' },
-  { label: 'Ideas', pct: 22, color: '#b59dfb', note: 'side-project queue, always growing' },
-  { label: 'Coffee', pct: 18, color: '#ffb866', note: 'system fuel — do not delete' },
-  { label: 'Projects', pct: 14, color: '#7ee787', note: '16 shipped and counting' },
-  { label: 'Sleep', pct: 4, color: '#ff7b72', note: 'partition nearly empty (by design)' },
-  { label: 'Free', pct: 4, color: '#d9d9de', note: 'reserved for your project 😉' },
-];
+// today's date, formatted Wikipedia-style ("14 July 2026, 01:42 (UTC)")
+const now = new Date();
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const lastEdited = `${now.getUTCDate()} ${months[now.getUTCMonth()]} ${now.getUTCFullYear()}, ${String(now.getUTCHours()).padStart(2,'0')}:${String(now.getUTCMinutes()).padStart(2,'0')} (UTC)`;
 ---
 
-<Base title="About — Aness Bouziani" description="About Aness Bouziani — full-stack & mobile developer, CS student at ESI Algiers.">
+<Base
+  title="Aness Bouziani — Wikipedia, the free encyclopedia"
+  description="Aness Bouziani is an Algerian computer-science student and aspiring software developer based in Algiers."
+>
   <header class="header">
     <a class="back" href="/">←</a>
     <div>
       <h1 class="title">About</h1>
-      <p class="hint">Every machine has a spec sheet. Here's mine.</p>
+      <p class="hint">A readable encyclopedia entry. No toy this time — just the facts.</p>
     </div>
   </header>
 
   <main class="stage">
-    <div class="mac-window" id="mac-window">
-      <div class="titlebar">
-        <span class="lights">
-          <button class="light l-red" id="tl-red" title="close (back home)" aria-label="Close — back to home"></button>
-          <button class="light l-yellow" id="tl-yellow" title="minimize" aria-label="Minimize"></button>
-          <button class="light l-green" id="tl-green" title="zoom" aria-label="Zoom window"></button>
-        </span>
-        <span class="win-title">About This Aness</span>
-      </div>
-
-      <nav class="tabs" id="tabs">
-        <button class="tab active" data-panel="overview">Overview</button>
-        <button class="tab" data-panel="storage">Storage</button>
-        <button class="tab" data-panel="journey">Journey</button>
+    <article class="wiki">
+      <!-- top tab strip (Wikipedia chrome) -->
+      <nav class="wiki-tabs" aria-label="page tabs">
+        <span class="wiki-tab active">Article</span>
+        <span class="wiki-tab">Talk</span>
+        <span class="wiki-spacer"></span>
+        <span class="wiki-tab muted">Read</span>
+        <span class="wiki-tab muted">Edit</span>
+        <span class="wiki-tab muted">View history</span>
       </nav>
 
-      <!-- ─── Overview ─── -->
-      <section class="panel active" id="panel-overview">
-        <div class="overview">
-          <div class="hero">
-            <img class="portrait" src="/avatar.webp" alt="Aness Bouziani" />
-            <span class="os-badge">anessOS</span>
-          </div>
-          <div class="specs">
-            <h2 class="dev-name">Aness Bouziani</h2>
-            <p class="dev-role">Full-Stack &amp; Mobile Developer, 2CP</p>
-
-            <dl class="spec-list">
-              <div><dt>Chip</dt><dd>Aness B1 Pro — neural engine permanently overclocked</dd></div>
-              <div><dt>Memory</dt><dd>Unlimited curiosity (expandable with coffee)</dd></div>
-              <div><dt>Startup Disk</dt><dd>Coffee HD ☕</dd></div>
-              <div><dt>OS</dt><dd>anessOS 2CP — ESI Algiers build</dd></div>
-              <div><dt>Location</dt><dd>Algiers, Algeria 🇩🇿 — remote-friendly</dd></div>
-              <div><dt>Serial</dt><dd class="mono">DZ-ESI-23ANEESSSS</dd></div>
-              <div><dt>Uptime</dt><dd class="mono" id="uptime">…</dd></div>
-            </dl>
-
-            <div class="btn-row">
-              <button class="mac-btn" id="btn-info">More Info…</button>
-              <button class="mac-btn" id="btn-update">Software Update…</button>
-            </div>
-            <div class="update-zone" id="update-zone" hidden>
-              <div class="update-bar"><i id="update-fill"></i></div>
-              <p class="update-msg" id="update-msg">Checking for updates…</p>
-            </div>
-          </div>
+      <!-- iconic Wikipedia stub banner, reworked as the open-to-work signal -->
+      <div class="stub">
+        <div class="stub-icon" aria-hidden="true">✎</div>
+        <div class="stub-text">
+          <strong>This article about a real person is a <a href="#stub-note" class="cn">stub</a>.</strong>
+          You can <strong>help Wikipedia by hiring him</strong> — expanding it with real, well-sourced work. <a href="/contact">Contact →</a>
         </div>
-        <p class="footnote">Crafting systems &amp; useful products — made of pixels and caffeine. Status: <strong>open to opportunities</strong>.</p>
-      </section>
+      </div>
 
-      <!-- ─── Storage ─── -->
-      <section class="panel" id="panel-storage">
-        <h3 class="panel-title">Aness HD — 512 GB of human</h3>
-        <div class="storage-bar">
-          {STORAGE.map((s) => (
-            <span
-              class="seg"
-              style={`--w:${s.pct}%; --c:${s.color}`}
-              data-label={`${s.label} — ${s.note}`}
-            ></span>
-          ))}
-        </div>
-        <p class="storage-tip" id="storage-tip">hover a segment 👆</p>
-        <ul class="legend">
-          {STORAGE.map((s) => (
-            <li>
-              <i style={`--c:${s.color}`}></i>
-              <strong>{s.label}</strong>
-              <span>{s.pct}%</span>
-              <em>{s.note}</em>
-            </li>
-          ))}
+      <h1 class="page-title">Aness Bouziani</h1>
+      <p class="lang-note">For other people named Aness Bouziani, <span class="redlink">there are none — the search yields exactly one result.</span></p>
+
+      <!-- ───────── infobox (vcard, right side) ───────── -->
+      <aside class="infobox">
+        <div class="ib-name">Aness Bouziani</div>
+        <img class="ib-photo" src="/avatar.webp" alt="Aness Bouziani" />
+        <div class="ib-cap">Aness in 2025</div>
+        <table class="ib-table">
+          <tbody>
+            <tr><th scope="row">Born</th><td>Algiers, Algeria</td></tr>
+            <tr><th scope="row">Nationality</th><td>Algerian</td></tr>
+            <tr><th scope="row">Occupation</th><td>Student</td></tr>
+            <tr><th scope="row">Years&nbsp;active</th><td>2023–present</td></tr>
+            <tr><th scope="row">Alma&nbsp;mater</th><td><a href="https://esi.dz" target="_blank" rel="noopener">ESI Algiers</a></td></tr>
+            <tr><th scope="row">Member of</th><td>ETIC Club</td></tr>
+            <tr><th scope="row">Status</th><td><span class="open">open to opportunities</span></td></tr>
+            <tr>
+              <th scope="row">Website</th>
+              <td><a href={GH} target="_blank" rel="noopener">github.com/23aneessss</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </aside>
+
+      <!-- ───────── lede ───────── -->
+      <p class="lede">
+        <strong>Aness Bouziani</strong> is an <a>Algerian</a> <a>computer-science</a> student in his third year at the
+        <a href="https://esi.dz" target="_blank" rel="noopener">Higher School of Computer Science (ESI Algiers)</a>,
+        with interests spanning <a>systems programming</a>, <a>mobile development</a>, <a>design and UI/UX</a>,
+        and the quieter corners of how software is built and how people use it.
+      </p>
+      <p>
+        He lives in <a>Algiers</a>, is active in the student-run <a>ETIC Club</a>, and is
+        <strong>open to opportunities</strong> <a>remote-friendly</a> from Algeria.
+      </p>
+
+      <!-- ───────── Early life and education ───────── -->
+      <h2 id="education">
+        <span class="edit" data-edit="education" title="You don't have permission to edit this">[edit]</span>
+        Early life and education
+      </h2>
+      <p>
+        Aness is from <a>Algiers</a>, where he was born and raised. He completed a first
+        <a>baccalauréat</a> in 2023 and spent the 2023–2024 academic year at the
+        National Higher School of Autonomous Systems.<sup class="ref"><a href="#ref-1">[1]</a></sup>
+        In 2024 he sat a second <a>baccalauréat</a> — a path he describes, without much ceremony, as
+        "a second key to the same door"<span class="cn-wrap"><span class="cn" data-note="Self-reported. Probably accurate. Probably also understated.">[citation needed]</span></span>
+        — and enrolled the same year at the
+        <a href="https://esi.dz" target="_blank" rel="noopener">Higher School of Computer Science (ESI Algiers)</a>
+        as a third-year candidate, where he is currently pursuing computer science.
+      </p>
+      <p>
+        He is currently in his <strong>third year</strong> at ESI, studying <a>computer science</a> with an interest
+        in how systems are designed — the answers a curriculum gives and the questions it leaves unanswered.<sup class="ref"><a href="#ref-1">[1]</a></sup>
+        He sees the degree less as a credential and more as a long, structured excuse to read, build, and break things
+        in good company.<span class="cn-wrap"><span class="cn" data-note="His words, gently paraphrased.">[clarification needed]</span></span>
+      </p>
+
+      <!-- ─── Extracurricular ─── -->
+      <h3 id="extracurricular" class="subhead">Extracurricular involvement</h3>
+      <p>
+        Since 2024 Aness has been an active member of the <a>ETIC Club</a>, ESI Algiers's student-run tech
+        association. He builds, organizes, and ships with the club across the academic year. In 2026 he served as
+        an <a>event coordinator</a> for the <a>S2EE 17</a> edition — one of the club's flagship events — handling
+        programming, logistics, and the particular kind of calm that keeps a multi-track event on schedule.
+        <sup class="ref"><a href="#ref-2">[2]</a></sup>
+        <span class="cn-wrap"><span class="cn" data-note="The club runs events every year; the 17th edition is the one he coordinated.">[clarification needed]</span></span>
+      </p>
+
+      <!-- ───────── Interests ───────── -->
+      <h2 id="interests">
+        <span class="edit" data-edit="interests" title="You don't have permission to edit this">[edit]</span>
+        Interests
+      </h2>
+      <p>
+        Aness's interests sit at the intersection of <a>systems software</a>, <a>mobile development</a>,
+        <a>design and UI/UX</a>, and <a>developer tooling</a> — he is drawn to problems where the user is also a
+        builder, and where the right abstraction is a quiet one nobody notices. He cares as much about how a product
+        feels to use as how it works underneath, and does his own design work rather than leaving it to someone else.
+        He reads more documentation than is strictly required, keeps a long queue of side projects, and treats
+        shipping small things as a way of learning a platform end-to-end instead of grazing its surface.<span class="cn-wrap"><span class="cn" data-note="He says. On the internet. Take with the usual grain of salt.">[citation needed]</span></span>
+      </p>
+      <p>
+        Outside of software, he divides his attention between steady <a>caffeine</a> consumption, long walks through
+        Algiers, and a stated preference for <a>house music</a> while debugging — a claim corroborated only by the
+        Music app on his own <a href="/contact">contact page</a>.<sup class="ref"><a href="#ref-3">[3]</a></sup>
+        He is, by his own account, <em>remote-friendly</em>, <em>open to opportunities</em>, and allergic to
+        stand-ups that could have been an issue.
+        <span class="cn-wrap"><span class="cn" data-note="Allergic in the figurative sense. No medical advice implied.">[citation needed]</span></span>
+      </p>
+
+      <!-- ───────── Approach ───────── -->
+      <h2 id="approach">
+        <span class="edit" data-edit="approach" title="You don't have permission to edit this">[edit]</span>
+        Approach
+      </h2>
+      <p>
+        Aness works alone well and with others better. He prefers reading the source over reading the docs,
+        shipping over perfecting, and small utilities over big platforms. He keeps a side-project queue that grows
+        faster than he can clear it, which he considers a feature rather than a bug. He has shipped work in
+        <a>Swift</a>, <a>Dart</a>, <a>TypeScript</a>, and Python, and is quietly of the opinion that
+        <a>Haskell</a> would have made him a better programmer if he had only taken the time.
+        <span class="cn-wrap"><span class="cn" data-note="Everyone says this. Nobody takes the time.">[citation needed]</span></span>
+      </p>
+      <p>
+        He believes the best portfolio is one the visitor remembers for what it felt like to use, not what it
+        listed — which is, more or less, the reason this page is written like a Wikipedia article.
+        <sup class="ref"><a href="#ref-4">[4]</a></sup>
+      </p>
+
+      <!-- ───────── Personal life ───────── -->
+      <h2 id="personal">
+        <span class="edit" data-edit="personal" title="You don't have permission to edit this">[edit]</span>
+        Personal life
+      </h2>
+      <p>
+        Aness lives in <a>Algiers</a>. He is reachable through his <a href="/contact">contact page</a> via email,
+        GitHub, LinkedIn, Instagram, Facebook, WhatsApp, Discord, and the Algerian telephone network — a contact
+        page styled as an iPhone home screen, because he thought it was funny and still does.<sup class="ref"><a href="#ref-3">[3]</a></sup>
+        He does not run, does not cook as often as he would like, and keeps a long reading backlog he works through
+        slowly and in no particular order. He is <strong>open to opportunities</strong> and takes the word
+        <em>remote-friendly</em> literally.
+      </p>
+
+      <!-- ───────── References ───────── -->
+      <h2 id="references">
+        <span class="edit" data-edit="references" title="You don't have permission to edit this">[edit]</span>
+        References
+      </h2>
+      <ol class="references">
+        <li id="ref-1"><a href="#ref-1" class="backlink">↑</a> <a href="https://esi.dz" target="_blank" rel="noopener">Higher School of Computer Science (ESI Algiers)</a> — official institutional site. Accessed <span class="mono">{lastEdited}</span>.</li>
+        <li id="ref-2"><a href="#ref-2" class="backlink">↑</a> ETIC Club, ESI Algiers — student association and event records. <a href="https://esi.dz" target="_blank" rel="noopener">esi.dz</a>.</li>
+        <li id="ref-3"><a href="#ref-3" class="backlink">↑</a> <a href="/contact">Contact — Aness Bouziani</a>. Self-published, <span class="mono">{now.getFullYear()}</span>.</li>
+        <li id="ref-4"><a href="#ref-4" class="backlink">↑</a> <a href="/">Aness Bouziani — portfolio v3</a>. <span class="mono">{now.getFullYear()}</span>.</li>
+      </ol>
+
+      <!-- ───────── External links ───────── -->
+      <h2 id="external">
+        <span class="edit" data-edit="external" title="You don't have permission to edit this">[edit]</span>
+        External links
+      </h2>
+      <ul class="external">
+        <li><a href={GH} target="_blank" rel="noopener">GitHub profile — 23aneessss</a></li>
+        <li><a href="https://www.linkedin.com/in/bouziani-ahmed-anes" target="_blank" rel="noopener">LinkedIn — bouziani-ahmed-anes</a></li>
+        <li><a href="https://www.instagram.com/23aneesssss" target="_blank" rel="noopener">Instagram — 23aneesssss</a></li>
+        <li><a href="https://www.facebook.com/share/1HvSEUu7Vx" target="_blank" rel="noopener">Facebook — Aness Bouziani</a></li>
+        <li><a href="https://wa.me/213782594339" target="_blank" rel="noopener">WhatsApp — +213 782 594 339</a></li>
+        <li><a href="mailto:oa_bouziani@esi.dz">Email — oa_bouziani@esi.dz</a> · <a href="/contact">Contact page</a></li>
+      </ul>
+
+      <!-- ───────── hidden stub ref ───────── -->
+      <p id="stub-note" class="stub-note">
+        <b>Stub</b>: a Wikipedia article too short to provide more than rudimentary information about its subject.
+        Here, that means there's plenty of room to fill in details — by talking to him. The fastest way to expand
+        this article is to <a href="/contact">reach out</a>.
+      </p>
+
+      <!-- footer -->
+      <footer class="wiki-foot">
+        <p class="foot-meta">This page was last edited on <span class="mono">{lastEdited}</span>.</p>
+        <p class="foot-meta muted">
+          Content is available under the philosophy of "the visitor already knows it's a portfolio." This is not
+          an actual Wikipedia article. It is a wink.
+        </p>
+        <ul class="foot-links">
+          <li><a>About Aness</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="https://esi.dz" target="_blank" rel="noopener">ESI Algiers</a></li>
+          <li><a>Disclaimers</a></li>
         </ul>
-        <div class="battery-box">
-          <span class="battery"><i></i></span>
-          <div>
-            <strong>Motivation — 100%</strong>
-            <p>Power source: coffee &amp; shipping features. Battery health: excellent, no degradation since 2023.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ─── Journey ─── -->
-      <section class="panel" id="panel-journey">
-        <h3 class="panel-title">system.log — the path so far</h3>
-        <ol class="timeline">
-          {JOURNEY.map((j) => (
-            <li>
-              <span class="tl-dot"></span>
-              <span class="tl-when mono">{j.when}</span>
-              <span class={`tl-tag tag-${j.tag.toLowerCase()}`}>{j.tag}</span>
-              <h4>{j.title}</h4>
-              <p>{j.body}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <div class="win-toast" id="win-toast"></div>
-    </div>
+      </footer>
+    </article>
   </main>
-
-  <p class="credits">
-    3D models: Folder by reyshapes (CC0) · Coffee cup by Poly by Google (CC-BY), via
-    <a href="https://poly.pizza" target="_blank" rel="noopener">Poly Pizza</a> · iPhone 15 Pro Max by
-    <a href="https://sketchfab.com/MG990" target="_blank" rel="noopener">MpPower™</a> (CC-BY) · MacBook Pro M3 by
-    <a href="https://sketchfab.com/jackbaeten" target="_blank" rel="noopener">jackbaeten</a> (CC-BY), via Sketchfab.
-  </p>
 </Base>
 
 <script>
-  const win = document.getElementById('mac-window')!;
-  const tabs = document.getElementById('tabs')!;
-  const toastEl = document.getElementById('win-toast')!;
-
-  // ---------- tabs ----------
-  const show = (name: string) => {
-    for (const t of tabs.querySelectorAll('.tab')) t.classList.toggle('active', (t as HTMLElement).dataset.panel === name);
-    for (const p of win.querySelectorAll('.panel')) p.classList.toggle('active', p.id === `panel-${name}`);
-  };
-  tabs.addEventListener('click', (e) => {
-    const t = (e.target as HTMLElement).closest<HTMLElement>('.tab');
-    if (t) show(t.dataset.panel!);
-  });
-  document.getElementById('btn-info')!.addEventListener('click', () => show('journey'));
-
-  // ---------- toast ----------
-  let toastTimer = 0;
-  const toast = (msg: string) => {
-    toastEl.textContent = msg;
-    toastEl.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = window.setTimeout(() => toastEl.classList.remove('show'), 2600);
-  };
-
-  // ---------- live uptime (booted at ESI, Sep 2024) ----------
-  const uptimeEl = document.getElementById('uptime')!;
-  const BOOT = new Date('2024-09-15T08:00:00');
-  const tick = () => {
-    let s = Math.max(0, Math.floor((Date.now() - BOOT.getTime()) / 1000));
-    const d = Math.floor(s / 86400);
-    s -= d * 86400;
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    uptimeEl.textContent = `${d} days, ${h}h ${m}m ${s % 60}s — no reboot needed`;
-  };
-  tick();
-  setInterval(tick, 1000);
-
-  // ---------- Software Update gag ----------
-  const btnUpdate = document.getElementById('btn-update')! as HTMLButtonElement;
-  const zone = document.getElementById('update-zone')!;
-  const fill = document.getElementById('update-fill')!;
-  const msg = document.getElementById('update-msg')!;
-  let updating = false;
-  btnUpdate.addEventListener('click', () => {
-    if (updating) return;
-    updating = true;
-    zone.hidden = false;
-    fill.style.transition = 'none';
-    fill.style.width = '0%';
-    msg.textContent = 'Checking for updates…';
-    requestAnimationFrame(() => {
-      fill.style.transition = 'width 2.2s cubic-bezier(0.3, 0.8, 0.4, 1)';
-      fill.style.width = '100%';
+  // tiny, non-intrusive easter eggs — this is a readable page, not a toy.
+  // [edit] links: pretend the visitor tried to edit Wikipedia.
+  for (const el of document.querySelectorAll<HTMLElement>('.edit')) {
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', () => {
+      if (confirm("You don't have permission to edit Aness.\n\nWikipedia is read-only for visitors — but he's open to feedback. Open the contact page?")) {
+        window.location.href = '/contact';
+      }
     });
-    setTimeout(() => (msg.textContent = 'Downloading new skills…'), 900);
-    setTimeout(() => {
-      msg.textContent = '✓ Aness is up to date — version 2CP (learning daily, updates ship continuously).';
-      updating = false;
-    }, 2400);
-  });
+  }
 
-  // ---------- traffic lights ----------
-  document.getElementById('tl-red')!.addEventListener('click', () => {
-    win.classList.add('closing');
-    setTimeout(() => (window.location.href = '/'), 240);
-  });
-  document.getElementById('tl-yellow')!.addEventListener('click', () => {
-    win.classList.add('minimized');
-    setTimeout(() => {
-      win.classList.remove('minimized');
-      toast('nice try — there is no dock here 😄');
-    }, 900);
-  });
-  document.getElementById('tl-green')!.addEventListener('click', () => {
-    win.classList.toggle('zoomed');
-  });
-
-  // ---------- storage segments tooltip ----------
-  const tip = document.getElementById('storage-tip')!;
-  const defaultTip = tip.textContent!;
-  for (const seg of document.querySelectorAll<HTMLElement>('.seg')) {
-    seg.addEventListener('pointerenter', () => (tip.textContent = seg.dataset.label!));
-    seg.addEventListener('pointerleave', () => (tip.textContent = defaultTip));
+  // [citation needed] / [clarification needed]: hover/focus popover.
+  let activeTip: HTMLElement | null = null;
+  const showTip = (cn: HTMLElement) => {
+    hideTip();
+    const note = cn.dataset.note;
+    if (!note) return;
+    const tip = document.createElement('div');
+    tip.className = 'cn-tip';
+    tip.textContent = note;
+    document.body.appendChild(tip);
+    const r = cn.getBoundingClientRect();
+    const tw = tip.offsetWidth;
+    tip.style.left = `${Math.max(8, r.left + r.width / 2 - tw / 2)}px`;
+    tip.style.top = `${window.scrollY + r.bottom + 6}px`;
+    activeTip = tip;
+  };
+  const hideTip = () => {
+    if (activeTip) {
+      activeTip.remove();
+      activeTip = null;
+    }
+  };
+  for (const cn of document.querySelectorAll<HTMLElement>('.cn')) {
+    cn.tabIndex = 0;
+    cn.addEventListener('pointerenter', () => showTip(cn));
+    cn.addEventListener('pointerleave', hideTip);
+    cn.addEventListener('focus', () => showTip(cn));
+    cn.addEventListener('blur', hideTip);
   }
 </script>
 
 <style>
+  /* ───── header (shared with other pages) ───── */
   .header {
     display: flex;
     align-items: baseline;
@@ -273,9 +277,7 @@ const STORAGE = [
     text-decoration: none;
     line-height: 1;
   }
-  .back:hover {
-    color: #6fbbff;
-  }
+  .back:hover { color: #6fbbff; }
   .title {
     margin: 0;
     font-size: clamp(1.8rem, 3.4vw, 2.6rem);
@@ -288,455 +290,353 @@ const STORAGE = [
     font-size: 15px;
     color: #767676;
   }
+
   .mono {
     font-family: ui-monospace, 'SF Mono', Menlo, monospace;
     font-size: 0.92em;
   }
 
+  /* ───── stage ───── */
   .stage {
     flex: 1;
     display: flex;
-    align-items: flex-start;
     justify-content: center;
-    padding: 30px 16px 24px;
+    padding: 24px 16px 32px;
   }
 
-  /* ---------- the window ---------- */
-  .mac-window {
+  /* ───── the article ───── */
+  .wiki {
+    width: min(820px, 100%);
+    background: #fbfbfd;
+    border: 1px solid #e4e6ea;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    padding: 18px 30px 22px;
+    font-family: Georgia, 'Times New Roman', Times, 'Noto Serif', serif;
+    color: #202122;
+    line-height: 1.62;
+    font-size: 16px;
     position: relative;
-    width: min(680px, 100%);
-    background: #f6f6f8;
-    border: 1px solid #dcdce0;
-    border-radius: 12px;
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.14), 0 2px 10px rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-    transition: transform 0.24s ease, opacity 0.24s ease, width 0.3s ease;
-    animation: win-open 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+    animation: art-in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both;
   }
-  @keyframes win-open {
-    from {
-      opacity: 0;
-      transform: scale(0.92) translateY(14px);
-    }
-  }
-  .mac-window.zoomed {
-    width: min(940px, 100%);
-  }
-  .mac-window.closing {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  .mac-window.minimized {
-    transform: scale(0.06) translateY(160%) rotate(2deg);
-    opacity: 0;
+  @keyframes art-in {
+    from { opacity: 0; transform: translateY(8px); }
   }
 
-  .titlebar {
-    position: relative;
+  /* Wikipedia's recognizable top tab strip */
+  .wiki-tabs {
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+    border-bottom: 1px solid #c8ccd1;
+    margin: 0 -30px 14px;
+    padding: 0 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    user-select: none;
+  }
+  .wiki-tab {
+    padding: 7px 12px;
+    color: #54595d;
+    cursor: default;
+    border-radius: 2px 2px 0 0;
+  }
+  .wiki-tab.active {
+    color: #202122;
+    background: #fbfbfd;
+    border: 1px solid #c8ccd1;
+    border-bottom: 1px solid #fbfbfd;
+    margin-bottom: -1px;
+    font-weight: 600;
+  }
+  .wiki-tab.muted { cursor: default; }
+  .wiki-spacer { flex: 1; }
+
+  /* stub banner — Wikipedia's actual look, slightly self-aware */
+  .stub {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 14px;
+    margin: 0 0 18px;
+    border: 1px solid #f0c36d;
+    background: #fef6e7;
+    border-radius: 3px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    color: #4d3a08;
+    line-height: 1.5;
+  }
+  .stub-icon {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #f0c36d;
+    color: #4d3a08;
+    font-size: 15px;
     display: flex;
     align-items: center;
-    height: 40px;
-    padding: 0 14px;
-    background: linear-gradient(#ececef, #e2e2e6);
-    border-bottom: 1px solid #d3d3d8;
-  }
-  .lights {
-    display: flex;
-    gap: 8px;
-  }
-  .light {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-  }
-  .l-red { background: #ff5f57; }
-  .l-yellow { background: #febc2e; }
-  .l-green { background: #28c840; }
-  .light:hover { filter: brightness(0.85); }
-  .win-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 13px;
-    font-weight: 600;
-    color: #6d6d73;
-  }
-
-  /* ---------- tabs ---------- */
-  .tabs {
-    display: flex;
     justify-content: center;
-    gap: 4px;
-    padding: 12px 0 0;
-  }
-  .tab {
-    border: none;
-    background: none;
-    padding: 6px 16px;
-    border-radius: 8px;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #6d6d73;
-    cursor: pointer;
-  }
-  .tab:hover { background: #e8e8ec; }
-  .tab.active {
-    background: #fff;
-    color: #141414;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .panel {
-    display: none;
-    padding: 26px 34px 30px;
-  }
-  .panel.active { display: block; }
-  .panel-title {
-    margin: 0 0 18px;
-    font-size: 15px;
     font-weight: 700;
-    color: #141414;
-    letter-spacing: -0.01em;
   }
+  .stub-text strong { color: #3a2c05; }
 
-  /* ---------- overview ---------- */
-  .overview {
-    display: flex;
-    gap: 30px;
-    align-items: flex-start;
+  /* page title — Wikipedia weight */
+  .page-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 30px;
+    font-weight: 380;
+    margin: 4px 0 2px;
+    letter-spacing: -0.005em;
+    line-height: 1.2;
+    border-bottom: 1px solid #c8ccd1;
+    padding-bottom: 6px;
   }
-  .hero {
-    position: relative;
-    flex: 0 0 auto;
+  .lang-note {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    font-style: italic;
+    color: #54595d;
+    margin: 6px 0 14px;
   }
-  .portrait {
-    width: 150px;
-    height: 150px;
+  .redlink { color: #ba0000; text-decoration: none; border-bottom: 1px dotted #ba0000; }
+
+  /* infobox — Wikipedia's "vcard" right rail */
+  .infobox {
+    float: right;
+    width: 290px;
+    margin: 8px 0 14px 28px;
+    border: 1px solid #a2a9b1;
+    border-radius: 3px;
+    background: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow: hidden;
+  }
+  .ib-name {
+    padding: 8px 10px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 1px solid #a2a9b1;
+    background: #eaecf0;
+    color: #202122;
+  }
+  .ib-photo {
+    display: block;
+    width: 100%;
+    height: 280px;
     object-fit: cover;
     object-position: top;
-    border-radius: 50%;
-    background: linear-gradient(160deg, #a8c6ff, #ffd3e6);
-    box-shadow: 0 8px 22px rgba(80, 100, 160, 0.22);
+    background: #dde2e8;
   }
-  .os-badge {
-    position: absolute;
-    bottom: 2px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #141414;
-    color: #fff;
-    font-size: 10.5px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 999px;
-    letter-spacing: 0.02em;
-  }
-  .dev-name {
-    margin: 4px 0 2px;
-    font-size: 26px;
-    font-weight: 750;
-    letter-spacing: -0.03em;
-  }
-  .dev-role {
-    margin: 0 0 16px;
-    font-size: 14px;
-    color: #8a8a90;
-  }
-  .spec-list {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-  }
-  .spec-list div {
-    display: flex;
-    gap: 10px;
-    font-size: 13.5px;
-    line-height: 1.5;
-  }
-  .spec-list dt {
-    flex: 0 0 96px;
-    font-weight: 650;
-    color: #141414;
-    text-align: right;
-  }
-  .spec-list dd {
-    margin: 0;
-    color: #55555c;
-  }
-  .btn-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  .mac-btn {
-    font-size: 13px;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 7px;
-    border: 1px solid #d0d0d6;
-    background: linear-gradient(#fff, #f3f3f6);
-    color: #141414;
-    cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-  }
-  .mac-btn:hover { background: #fff; }
-  .mac-btn:active {
-    background: #e8e8ec;
-    box-shadow: none;
-  }
-  .update-zone {
-    margin-top: 16px;
-    max-width: 380px;
-  }
-  .update-bar {
-    height: 6px;
-    border-radius: 999px;
-    background: #e2e2e7;
-    overflow: hidden;
-  }
-  .update-bar i {
-    display: block;
-    height: 100%;
-    width: 0%;
-    border-radius: 999px;
-    background: #6fbbff;
-  }
-  .update-msg {
-    margin: 8px 0 0;
-    font-size: 12.5px;
-    color: #6d6d73;
-  }
-  .footnote {
-    margin: 24px 0 0;
-    padding-top: 16px;
-    border-top: 1px solid #e4e4e8;
-    font-size: 13px;
-    color: #6d6d73;
-  }
-  .footnote strong { color: #1f9d4d; }
-
-  /* ---------- storage ---------- */
-  .storage-bar {
-    display: flex;
-    height: 34px;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid #d6d6db;
-  }
-  .seg {
-    width: var(--w);
-    background: linear-gradient(180deg, color-mix(in srgb, var(--c) 82%, #fff), var(--c));
-    cursor: pointer;
-    transition: filter 0.15s ease;
-  }
-  .seg:hover { filter: brightness(1.08) saturate(1.15); }
-  .storage-tip {
-    margin: 10px 2px 18px;
-    font-size: 12.5px;
-    color: #8a8a90;
-    min-height: 1.2em;
-  }
-  .legend {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 9px 26px;
-  }
-  .legend li {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    font-size: 13px;
-  }
-  .legend i {
-    flex: 0 0 auto;
-    width: 10px;
-    height: 10px;
-    border-radius: 3px;
-    background: var(--c);
-    align-self: center;
-  }
-  .legend strong { color: #141414; }
-  .legend span { color: #8a8a90; }
-  .legend em {
-    color: #8a8a90;
-    font-style: normal;
+  .ib-cap {
+    padding: 6px 10px;
+    text-align: center;
+    color: #54595d;
     font-size: 12px;
+    border-bottom: 1px solid #c8ccd1;
   }
-  .battery-box {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    margin-top: 24px;
-    padding: 14px 16px;
-    background: #fff;
-    border: 1px solid #e4e4e8;
-    border-radius: 12px;
+  .ib-table {
+    width: 100%;
+    border-collapse: collapse;
   }
-  .battery {
-    flex: 0 0 auto;
-    position: relative;
-    width: 46px;
-    height: 22px;
-    border: 2px solid #b9b9c0;
-    border-radius: 6px;
-    padding: 2.5px;
+  .ib-table th,
+  .ib-table td {
+    padding: 6px 8px;
+    text-align: left;
+    vertical-align: top;
+    border-top: 1px solid #eaecf0;
   }
-  .battery::after {
-    content: '';
-    position: absolute;
-    right: -6px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 9px;
-    background: #b9b9c0;
+  .ib-table th {
+    width: 36%;
+    color: #202122;
+    font-weight: 600;
+    background: #eaecf0;
+    font-size: 12.5px;
+  }
+  .ib-table td { color: #202122; }
+
+  /* lede — slightly larger, bold opening name */
+  .lede { font-size: 17px; line-height: 1.7; margin-top: 0; }
+  .lede strong { font-weight: 700; }
+
+  /* all article links (Wikipedia blue, dotted underline) */
+  .wiki a, .wiki-tabs a {
+    color: #3366c4;
+    text-decoration: none;
+  }
+  .wiki a:hover { text-decoration: underline; }
+  /* section [edit] pencils */
+  .edit {
+    float: right;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #54595d;
+    text-decoration: none;
+    margin-left: 8px;
+    line-height: 1;
+    opacity: 0.55;
+    transition: opacity 0.15s ease, color 0.15s ease;
+  }
+  .edit:hover { opacity: 1; color: #3366c4; }
+
+  /* section headings — Wikipedia's signature style */
+  .wiki h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: 380;
+    margin: 22px 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #c8ccd1;
+    color: #000;
+    clear: both;
+  }
+  .wiki h2:hover .edit { opacity: 1; }
+  .wiki p {
+    margin: 0 0 12px;
+    overflow-wrap: break-word;
+  }
+  .wiki ul { margin: 0 0 12px; padding-left: 22px; }
+  .wiki li { margin: 2px 0; }
+
+  /* hatnote — Wikipedia's "Main page:" callouts */
+  .hatnote {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    font-style: italic;
+    color: #54595d;
+    background: #f8f9fa;
+    border-left: 3px solid #c8ccd1;
+    padding: 5px 10px;
+    margin: 0 0 10px;
     border-radius: 0 2px 2px 0;
   }
-  .battery i {
-    display: block;
-    height: 100%;
-    width: 100%;
-    background: #28c840;
-    border-radius: 2.5px;
-  }
-  .battery-box strong { font-size: 13.5px; }
-  .battery-box p {
-    margin: 3px 0 0;
-    font-size: 12.5px;
-    color: #6d6d73;
-    line-height: 1.5;
-  }
 
-  /* ---------- journey ---------- */
-  .timeline {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0 22px;
-    position: relative;
-  }
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 5px;
-    top: 6px;
-    bottom: 6px;
-    width: 2px;
-    background: #e0e0e5;
-    border-radius: 2px;
-  }
-  .timeline li {
-    position: relative;
-    padding: 0 0 22px;
-  }
-  .timeline li:last-child { padding-bottom: 4px; }
-  .tl-dot {
-    position: absolute;
-    left: -22px;
-    top: 5px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #6fbbff;
-    border: 2.5px solid #f6f6f8;
-    box-shadow: 0 0 0 2px rgba(111, 187, 255, 0.25);
-  }
-  .tl-when {
+  /* [citation needed] tag — Wikipedia's classic inline tag */
+  .cn-wrap { white-space: nowrap; }
+  .cn {
+    color: #54595d;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
     font-size: 12px;
-    color: #8a8a90;
-    margin-right: 8px;
+    font-style: italic;
+    cursor: help;
+    border-bottom: 1px dotted #54595d;
+    margin-left: 1px;
   }
-  .tl-tag {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: #eaeaef;
-    color: #55555c;
-  }
-  .tag-achievement { background: #fff3d6; color: #a06b00; }
-  .tag-club { background: #e8f7ec; color: #1f9d4d; }
-  .tag-event { background: #f0e9ff; color: #7a4fd0; }
-  .timeline h4 {
-    margin: 7px 0 3px;
-    font-size: 15px;
-    letter-spacing: -0.01em;
-  }
-  .timeline p {
-    margin: 0;
-    font-size: 13px;
-    color: #6d6d73;
-    line-height: 1.55;
-  }
-
-  /* ---------- toast ---------- */
-  .win-toast {
+  .cn:hover, .cn:focus { color: #ba0000; border-bottom-color: #ba0000; }
+  .cn-tip {
     position: absolute;
-    bottom: 14px;
-    left: 50%;
-    transform: translate(-50%, 8px);
-    padding: 8px 18px;
-    border-radius: 999px;
-    background: rgba(22, 24, 29, 0.92);
-    color: #fff;
+    z-index: 50;
+    max-width: 280px;
+    padding: 9px 12px;
+    background: #1a1a1d;
+    color: #f4f4f6;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
     font-size: 12.5px;
-    font-weight: 550;
-    opacity: 0;
+    line-height: 1.45;
+    border-radius: 6px;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22);
     pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    white-space: nowrap;
-  }
-  .win-toast.show {
-    opacity: 1;
-    transform: translate(-50%, 0);
   }
 
-  .credits {
-    margin: 0 auto;
-    padding: 0 24px 26px;
-    max-width: 680px;
+  /* superscript reference refs */
+  .ref { font-family: Georgia, serif; font-size: 0.7em; color: #3366c4; vertical-align: super; }
+
+  /* references list */
+  .references {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #202122;
+    padding-left: 22px;
+  }
+  .references li { margin: 4px 0; }
+  .backlink { color: #54595d; text-decoration: none; margin-right: 4px; }
+  .backlink:hover { color: #3366c4; }
+
+  .external { font-family: Georgia, serif; font-size: 15px; }
+
+  /* subhead (h3 inside a section, e.g. "Extracurricular involvement") */
+  .subhead {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 16px 0 6px;
+    color: #202122;
+  }
+
+  /* infobox green "open" status */
+  .open {
+    color: #1f9d4d;
+    font-weight: 600;
+  }
+  .open::before {
+    content: '✓ ';
+    font-weight: 700;
+  }
+
+  /* see also list */
+  .seealso { font-size: 15px; }
+
+  /* hidden stub definition at bottom */
+  .stub-note {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    color: #54595d;
+    background: #f8f9fa;
+    border: 1px solid #eaecf0;
+    padding: 10px 14px;
+    border-radius: 3px;
+    margin: 18px 0 0;
+  }
+  .stub-note b { color: #202122; }
+
+  /* footer */
+  .wiki-foot {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid #c8ccd1;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
     font-size: 12px;
-    color: #b0b0b0;
-    text-align: center;
+    color: #54595d;
   }
-  .credits a {
-    color: #909090;
+  .foot-meta { margin: 0 0 4px; }
+  .foot-meta.muted { color: #8a8d92; font-style: italic; }
+  .foot-links {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
   }
+  .foot-links li { color: #54595d; }
+  .foot-links a { color: #3366c4; }
 
+  /* reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .mac-window { animation: none; }
+    .wiki { animation: none; }
   }
 
+  /* mobile: infobox goes below, type stays readable */
   @media (max-width: 760px) {
-    .header {
-      padding: 22px 24px 0;
+    .header { padding: 22px 24px 0; }
+    .stage { padding: 16px 10px 24px; }
+    .wiki { padding: 14px 18px 18px; font-size: 15px; }
+    .wiki-tabs { margin: 0 -18px 12px; padding: 0 6px; }
+    .wiki-tab { padding: 6px 9px; font-size: 12px; }
+    .infobox {
+      float: none;
+      width: auto;
+      margin: 10px 0 16px;
     }
-    .stage {
-      padding: 20px 12px 24px;
-    }
-    .overview {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-    .spec-list div {
-      flex-direction: column;
-      gap: 0;
-    }
-    .spec-list dt {
-      flex: none;
-      text-align: center;
-    }
-    .btn-row { justify-content: center; }
-    .panel { padding: 20px 18px 24px; }
-    .legend { grid-template-columns: 1fr; }
-    .win-toast { white-space: normal; width: max-content; max-width: 90%; text-align: center; }
+    .ib-photo { height: 240px; }
+    .page-title { font-size: 26px; }
+    .wiki h2 { font-size: 20px; }
+    .lede { font-size: 16px; }
   }
 </style>
