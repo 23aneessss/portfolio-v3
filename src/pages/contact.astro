@@ -1,23 +1,24 @@
 ---
 import Base from '../layouts/Base.astro';
 
-// ── EDIT ME: real handles / number ─────────────────────────────
 const LINKS = {
   gmail: 'mailto:oa_bouziani@esi.dz',
   github: 'https://github.com/23aneessss',
-  linkedin: 'https://www.linkedin.com/in/YOUR_HANDLE', // EDIT
-  instagram: 'https://www.instagram.com/YOUR_HANDLE', // EDIT
-  facebook: 'https://www.facebook.com/YOUR_HANDLE', // EDIT
-  whatsapp: 'https://wa.me/213XXXXXXXXX', // EDIT
-  phone: 'tel:+213XXXXXXXXX', // EDIT
+  linkedin: 'https://www.linkedin.com/in/YOUR_HANDLE', // EDIT — you didn't share this one
+  instagram: 'https://www.instagram.com/23aneesssss?igsh=MWlsdG9vamV0a2Nwbg%3D%3D&utm_source=qr',
+  facebook: 'https://www.facebook.com/share/1HvSEUu7Vx/?mibextid=wwXIfr',
+  whatsapp: 'https://wa.me/213782594339',
+  phone: 'tel:+213782594339',
+  discord: 'anesbouziani', // username only — copied to clipboard (no public profile URL by username)
 };
-// ───────────────────────────────────────────────────────────────
 
 interface App {
   name: string;
   icon?: string; // official app icon in /public/icons
+  svg?: 'discord'; // inline SVG logo (no image file in /public/icons)
   live?: 'calendar' | 'clock'; // rendered live (real date / ticking clock), like iOS does
   href?: string; // clickable → real contact link
+  copy?: string; // clickable → copies this text to clipboard (no public URL available)
   msg?: string; // decorative → funny banner message
 }
 
@@ -34,7 +35,7 @@ const GRID: App[] = [
   { name: 'Notes', icon: '/icons/notes.jpg', msg: 'TODO: reply to Aness ✏️' },
   { name: 'Calculator', icon: '/icons/calculator.jpg', msg: 'you + me = 🤝 (the math checks out)' },
   { name: 'Maps', icon: '/icons/maps.jpg', msg: '📍 Algiers, Algeria — remote-friendly' },
-  { name: 'Music', icon: '/icons/music.jpg', msg: 'lo-fi beats to debug to 🎧' },
+  { name: 'Discord', svg: 'discord', copy: LINKS.discord },
 ];
 
 const DOCK: App[] = [
@@ -44,7 +45,8 @@ const DOCK: App[] = [
   { name: 'LinkedIn', icon: '/icons/linkedin.jpg', href: LINKS.linkedin },
 ];
 
-const external = (href?: string) => !!href && !href.startsWith('mailto:') && !href.startsWith('tel:');
+const external = (href?: string) =>
+  !!href && !href.startsWith('mailto:') && !href.startsWith('tel:');
 ---
 
 <Base title="Contact — Aness Bouziani" description="Get in touch with Aness Bouziani — pick an app.">
@@ -102,6 +104,12 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
                       <i class="pin"></i>
                     </span>
                   </span>
+                ) : app.svg === 'discord' ? (
+                  <span class="tile tile-discord">
+                    <svg viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true">
+                      <path d="M107.7 8.07A105.15 105.15 0 0 0 80.92 0a72.7 72.7 0 0 0-3.36 6.89 97.2 97.2 0 0 0-29.06 0A72.7 72.7 0 0 0 45.14 0 105.1 105.1 0 0 0 18.37 8.07C2.79 32.65-1.71 56.6.54 80.21a105.9 105.9 0 0 0 32.17 16.15 77.45 77.45 0 0 0 6.89-11.11 68.3 68.3 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2.05a75.57 75.57 0 0 0 64.32 0c.86.71 1.75 1.39 2.66 2.05a68.3 68.3 0 0 1-10.86 5.18 77.45 77.45 0 0 0 6.89 11.11 105.9 105.9 0 0 0 32.19-16.15c2.62-27.45-4.48-51.17-18.69-76.14zM42.45 65.69C36.18 65.69 31 59.94 31 52.94s5-12.75 11.4-12.75 11.5 5.85 11.39 12.75c0 7-5 12.75-11.34 12.75zm42.24 0c-6.27 0-11.39-5.75-11.39-12.75s5-12.75 11.39-12.75S96 45.94 96 52.94s-5 12.75-11.31 12.75z"/>
+                    </svg>
+                  </span>
                 ) : (
                   <span class="tile"><img src={app.icon} alt="" loading="lazy" /></span>
                 );
@@ -116,6 +124,12 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
                   <span class="badge">✕</span>
                   <span class="app-label">{app.name}</span>
                 </a>
+              ) : app.copy ? (
+                <button class="app app-copy" data-copy={app.copy} title={`Copy ${app.name} username`}>
+                  {tile}
+                  <span class="badge">✕</span>
+                  <span class="app-label">{app.name}</span>
+                </button>
               ) : (
                 <button class="app app-deco" data-msg={app.msg}>
                   {tile}
@@ -205,6 +219,25 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
       void el.offsetWidth; // restart the animation
       el.classList.add('bounce');
       toast(el.dataset.msg!);
+    });
+  }
+
+  // ---------- copy-to-clipboard apps (Discord, etc.) ----------
+  for (const el of document.querySelectorAll<HTMLElement>('.app-copy')) {
+    el.addEventListener('click', async () => {
+      if (screen.classList.contains('jiggle')) return;
+      const value = el.dataset.copy!;
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(value);
+        copied = true;
+      } catch {
+        copied = false;
+      }
+      el.classList.remove('bounce');
+      void el.offsetWidth;
+      el.classList.add('bounce');
+      toast(copied ? `copied “${value}” — ping me on Discord 🎮` : `Discord: ${value}`);
     });
   }
   widget.addEventListener('click', () => {
@@ -637,6 +670,14 @@ const external = (href?: string) => !!href && !href.startsWith('mailto:') && !hr
   }
 
   /* ---------- live Clock (real ticking time, like iOS) ---------- */
+  .tile-discord {
+    background: #5865f2;
+    color: #fff;
+  }
+  .tile-discord svg {
+    width: 60%;
+    height: 60%;
+  }
   .tile-clock { background: #000; }
   .clockface {
     position: relative;
