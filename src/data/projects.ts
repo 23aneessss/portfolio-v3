@@ -52,6 +52,7 @@ export const PROJECTS: Project[] = [
     status: 'shipped',
     year: '2025',
     repo: `${GH}/orbit-desktop`,
+    site: 'https://orbit-macos.vercel.app/',
     download: `${GH}/orbit-desktop/releases/latest`,
     shots: [],
   },

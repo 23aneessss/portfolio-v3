@@ -26,6 +26,7 @@ const POP_MS = 140; // delay between pops in a burst
 const FLOAT_MS = 10_000; // how long each icon holds the line before falling
 const DROP_MARGIN = 30; // px around the folder that still counts as "home"
 const SPRING = 0.00004; // steering strength toward the line slot
+const FLOATING_GROUP = -1; // Matter group: same negative group = never collide
 const REBURST_COOLDOWN = 900; // ms after re-homing before hover can burst again
 
 interface Chip {
@@ -127,11 +128,19 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
     // pop from the folder mouth…
     const mx = fr.left - rr.left + fr.width / 2;
     const my = fr.top - rr.top + fr.height / 3;
-    // …into a horizontal line starting right of the folder, at folder height;
-    // overflow wraps to an extra line just above
-    const startX = fr.right - rr.left + 34 + CHIP / 2;
-    const rowY = fr.top - rr.top + fr.height / 2 - 16;
-    const perRow = Math.max(1, Math.floor((root.clientWidth - startX - 24) / SLOT_W));
+    // …into a horizontal line. Wide screens get the line to the RIGHT of the
+    // folder, wrapping upward. Narrow screens (phones) have no usable room
+    // there, so the line goes BELOW the folders across the full width and
+    // wraps downward — otherwise the icons pile into a 3-wide sliver.
+    const rightRoom = root.clientWidth - (fr.right - rr.left) - 24;
+    const narrow = rightRoom < SLOT_W * 3;
+
+    const startX = narrow ? 16 + CHIP / 2 : fr.right - rr.left + 34 + CHIP / 2;
+    const rowY = narrow
+      ? fr.bottom - rr.top + 46 + CHIP / 2
+      : fr.top - rr.top + fr.height / 2 - 16;
+    const rowStep = narrow ? CHIP + 16 : -(CHIP + 16); // down on phones, up on desktop
+    const perRow = Math.max(1, Math.floor((root.clientWidth - startX - 16) / SLOT_W));
 
     batch.forEach((item, i) => {
       window.setTimeout(() => {
@@ -143,6 +152,11 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
           restitution: 0.4,
           friction: 0.15,
           frictionAir: 0.09, // damped while it travels to / holds the line
+          // a shared negative group means chips never collide with each other
+          // while they hold the line — otherwise they shove each other out of
+          // their slots and pile up. Walls/floor stay in group 0, so those
+          // collisions still happen. Restored to 0 when the chip falls.
+          collisionFilter: { group: FLOATING_GROUP, category: 1, mask: 0xffffffff },
         });
         Matter.Body.setVelocity(body, { x: 2, y: -5 });
         Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1);
@@ -155,7 +169,7 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
           phase: Math.random() * Math.PI * 2,
           target: {
             x: startX + (i % perRow) * SLOT_W,
-            y: rowY - Math.floor(i / perRow) * (CHIP + 16),
+            y: rowY + Math.floor(i / perRow) * rowStep,
           },
         });
       }, i * POP_MS);
@@ -188,7 +202,10 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
         // keep the card readable while it holds the line
         Matter.Body.setAngularVelocity(c.body, c.body.angularVelocity * 0.9 - c.body.angle * 0.03);
       } else if (c.body.frictionAir > 0.03) {
+        // float window over: normal air drag, and chips collide again so they
+        // land and stack on the floor instead of passing through each other
         c.body.frictionAir = 0.02;
+        c.body.collisionFilter.group = 0;
       }
     }
   });

@@ -7,7 +7,7 @@ import Base from '../layouts/Base.astro';
     <a class="back" href="/">←</a>
     <div>
       <h1 class="title">Tech Stack</h1>
-      <p class="hint">Hover a folder — drag the runaways back before they hit the floor.</p>
+      <p class="hint"><span class="on-hover">Hover</span><span class="on-touch">Tap</span> a folder — drag the runaways back before they hit the floor.</p>
     </div>
   </header>
 
@@ -118,6 +118,13 @@ import Base from '../layouts/Base.astro';
     letter-spacing: -0.03em;
     line-height: 1.05;
   }
+  /* "Hover" is meaningless on a touch screen — swap the verb by input type */
+  .on-touch { display: none; }
+  @media (hover: none) {
+    .on-hover { display: none; }
+    .on-touch { display: inline; }
+  }
+
   .hint {
     margin: 6px 0 0;
     font-size: 15px;
