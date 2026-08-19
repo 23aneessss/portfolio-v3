@@ -37,17 +37,6 @@ import Base from '../layouts/Base.astro';
     </div>
   </main>
 
-  <!-- cat <project> popup -->
-  <div class="modal" id="modal" hidden>
-    <div class="modal-backdrop" id="modal-backdrop"></div>
-    <div class="modal-card" role="dialog" aria-modal="true" id="modal-card">
-      <div class="modal-bar">
-        <span class="modal-path" id="modal-path">~/projects/…</span>
-        <button class="modal-close" id="modal-close" aria-label="close">✕</button>
-      </div>
-      <div class="modal-content" id="modal-content"></div>
-    </div>
-  </div>
 </Base>
 
 <script>
@@ -58,10 +47,6 @@ import Base from '../layouts/Base.astro';
   const input = document.getElementById('term-input')! as HTMLInputElement;
   const body = document.getElementById('term-body')!;
   const term = document.getElementById('term')!;
-  const modal = document.getElementById('modal')!;
-  const modalCard = document.getElementById('modal-card')!;
-  const modalContent = document.getElementById('modal-content')!;
-  const modalPath = document.getElementById('modal-path')!;
 
   let cwd: '~' | '~/projects' = '~';
   const history: string[] = [];
@@ -275,32 +260,6 @@ import Base from '../layouts/Base.astro';
     }
   };
 
-  // ---------- popup ----------
-
-  const openModal = (p: Project) => {
-    modalPath.textContent = `~/projects/${p.slug}`;
-    modalContent.innerHTML = `
-      <h2 class="m-name">${esc(p.name)}</h2>
-      <p class="m-desc">${esc(p.summary)}</p>
-      <div class="m-tech">${p.stack.map((t) => `<span class="m-chip">${esc(t)}</span>`).join('')}</div>
-      <div class="m-links">
-        <a class="m-btn" href="${esc(p.repo)}" target="_blank" rel="noopener">↗ GitHub repo</a>
-        ${p.site ? `<a class="m-btn m-btn-live" href="${esc(p.site)}" target="_blank" rel="noopener">↗ Live app</a>` : `<span class="m-offline">not deployed — lives in the repo</span>`}
-      </div>`;
-    modal.hidden = false;
-    requestAnimationFrame(() => modal.classList.add('show'));
-  };
-
-  const closeModal = () => {
-    modal.classList.remove('show');
-    setTimeout(() => {
-      modal.hidden = true;
-      input.focus();
-    }, 180);
-  };
-
-  document.getElementById('modal-close')!.addEventListener('click', closeModal);
-  document.getElementById('modal-backdrop')!.addEventListener('click', closeModal);
 
   // ---------- input line rendering ----------
 
@@ -392,7 +351,6 @@ import Base from '../layouts/Base.astro';
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !modal.hidden) closeModal();
   });
   modalCard.addEventListener('click', (e) => e.stopPropagation());
 
@@ -576,11 +534,6 @@ import Base from '../layouts/Base.astro';
   }
 
   /* ---------- cat popup ---------- */
-  .modal[hidden] {
-    /* display:flex below would override the hidden attribute — without this,
-       an invisible full-page overlay swallows every click (e.g. the ← link) */
-    display: none;
-  }
   .modal {
     position: fixed;
     inset: 0;
