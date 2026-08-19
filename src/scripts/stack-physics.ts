@@ -132,8 +132,10 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
     // folder, wrapping upward. Narrow screens (phones) have no usable room
     // there, so the line goes BELOW the folders across the full width and
     // wraps downward — otherwise the icons pile into a 3-wide sliver.
+    // needs room for a real line, not two icons stacked in a sliver — below
+    // ~5 slots the right-hand layout stops reading as a line at all
     const rightRoom = root.clientWidth - (fr.right - rr.left) - 24;
-    const narrow = rightRoom < SLOT_W * 3;
+    const narrow = rightRoom < SLOT_W * 5;
 
     const startX = narrow ? 16 + CHIP / 2 : fr.right - rr.left + 34 + CHIP / 2;
     const rowY = narrow

@@ -222,9 +222,15 @@ import Base from '../layouts/Base.astro';
     .header {
       padding: 22px 24px 0;
     }
+    /* phones have no usable room to the right of a left-hand column, so the
+       folders sit in a row up top and the icons get the full width below */
     .stations {
-      left: 16px;
-      gap: 14px;
+      position: static;
+      transform: none;
+      flex-direction: row;
+      justify-content: center;
+      gap: 10px;
+      padding-top: 14px;
     }
     .station canvas {
       width: 100px;
