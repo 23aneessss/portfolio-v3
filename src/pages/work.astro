@@ -51,103 +51,7 @@ import Base from '../layouts/Base.astro';
 </Base>
 
 <script>
-  interface Project {
-    name: string;
-    desc: string;
-    lang: string;
-    tech: string[];
-    repo: string;
-    live?: string;
-  }
-
-  const GH = 'https://github.com/23aneessss';
-
-  const PROJECTS: Project[] = [
-    {
-      name: 'macagentkit',
-      desc: 'The low-level Swift plumbing every macOS automation tool & AI agent re-implements badly. Robust Accessibility (AX) traversal on modern macOS, the TCC permission maze handled, Control Center, Do Not Disturb & Shortcuts — zero dependencies.',
-      lang: 'Swift',
-      tech: ['Swift', 'Accessibility API', 'macOS'],
-      repo: `${GH}/MacAgentKit`,
-    },
-    {
-      name: 'appxray',
-      desc: 'Independent, offline privacy & capability auditor for macOS apps. Drop in any .app — see sandbox status, entitlements, private frameworks, notarization, and background helpers. Reads from the binary, not from self-declared labels. Zero dependencies.',
-      lang: 'Swift',
-      tech: ['Swift', 'macOS', 'Security'],
-      repo: `${GH}/AppXray`,
-    },
-    {
-      name: 'focusnotch',
-      desc: "A Pomodoro timer that lives in the MacBook notch — each session at a glance, expanding into controls for breaks, progress, and Do Not Disturb.",
-      lang: 'Swift',
-      tech: ['SwiftUI', 'macOS 14+'],
-      repo: `${GH}/FocusNotch`,
-    },
-    {
-      name: 'orbit-desktop',
-      desc: 'A private, local-first workspace that brings habits, ideas, tasks, visual workflows, and personal follow-ups together — all data kept on your Mac, no servers in the loop.',
-      lang: 'Swift',
-      tech: ['SwiftUI', 'SwiftData', 'macOS'],
-      repo: `${GH}/orbit-desktop`,
-    },
-    {
-      name: 'sequence',
-      desc: "A GitHub-style contribution-graph habit tracker for iOS. Every day is a square; build streaks you don't want to break. SwiftUI + SwiftData, local-first.",
-      lang: 'Swift',
-      tech: ['SwiftUI', 'SwiftData', 'iOS'],
-      repo: `${GH}/Sequence`,
-    },
-    {
-      name: 'jo3t',
-      desc: 'Discover restaurants, cafés, and hidden gems across Algeria through community reviews, real photos, maps, and a community-backed score for every place.',
-      lang: 'Dart',
-      tech: ['Flutter', 'Dart', 'Maps'],
-      repo: `${GH}/jo3t-app`,
-    },
-    {
-      name: 'planora',
-      desc: 'A mobile-first, offline-first Flutter student planner: tasks, calendar planning, Pomodoro focus sessions, grades, and optional cloud sync. Android & iOS.',
-      lang: 'Dart',
-      tech: ['Flutter', 'Dart', 'Offline-first'],
-      repo: `${GH}/student-planner`,
-    },
-    {
-      name: 'doctorcom',
-      desc: 'An AI-powered medical-practice workspace that brings appointments, patient records, consultations, prescriptions, and follow-ups together, with in-context assistance for clinical questions and medication safety.',
-      lang: 'TypeScript',
-      tech: ['TypeScript', 'AI', 'Full-stack'],
-      repo: `${GH}/doctorcom`,
-    },
-    {
-      name: 'nearby',
-      desc: 'A location-based marketplace platform — clients discover and book professional services in their immediate vicinity. Real-time booking, interactive maps, role-based management dashboards.',
-      lang: 'TypeScript',
-      tech: ['TypeScript', 'Maps', 'Real-time'],
-      repo: `${GH}/Nearby-App`,
-    },
-    {
-      name: 'port-flow',
-      desc: 'A role-based booking platform for port terminals — slot requests, capacity management, approvals, notifications, and QR codes. Admin, operator, transporter, and driver flows.',
-      lang: 'TypeScript',
-      tech: ['TypeScript', 'PostgreSQL', 'QR'],
-      repo: `${GH}/Port-Flow`,
-    },
-    {
-      name: 'ba33-aup4',
-      desc: "Algeria's NFN Wool Traceability Platform. A monorepo: NestJS/PostgreSQL backend, Flutter mobile apps (Collector, Shepherd, Transporter) and web portals. Feature-based MVVM, Riverpod state management, dedicated design system.",
-      lang: 'TypeScript',
-      tech: ['NestJS', 'PostgreSQL', 'Flutter'],
-      repo: `${GH}/ba33-aup4`,
-    },
-    {
-      name: 'movio',
-      desc: 'A mobile app to discover movies, save favorites, mark what you have watched, and manage your profile.',
-      lang: 'TypeScript',
-      tech: ['React Native', 'TypeScript'],
-      repo: `${GH}/Movio`,
-    },
-  ];
+  import { PROJECTS, type Project } from '../data/projects';
 
   const out = document.getElementById('term-out')!;
   const line = document.getElementById('term-line')!;
@@ -207,9 +111,9 @@ import Base from '../layouts/Base.astro';
       return;
     }
     // listing the projects
-    const cols = PROJECTS.map((p) => cmdLink(`cat ${p.name}`, p.name)).join('');
+    const cols = PROJECTS.map((p) => cmdLink(`cat ${p.slug}`, p.slug)).join('');
     print(`<div class="ls-grid">${cols}</div>`);
-    printHint(`open one with <span class="code">cat &lt;name&gt;</span> — e.g. ${cmdLink(`cat ${PROJECTS[0].name}`)}`);
+    printHint(`open one with <span class="code">cat &lt;name&gt;</span> — e.g. ${cmdLink(`cat ${PROJECTS[0].slug}`)}`);
   };
 
   const doCd = (arg?: string) => {
@@ -238,11 +142,11 @@ import Base from '../layouts/Base.astro';
   };
 
   const findProject = (name: string) =>
-    PROJECTS.find((p) => p.name === name.toLowerCase().replace(/^(\.\/|~\/projects\/|projects\/)/, ''));
+    PROJECTS.find((p) => p.slug === name.toLowerCase().replace(/^(\.\/|~\/projects\/|projects\/)/, ''));
 
   const closest = (name: string) => {
     const n = name.toLowerCase();
-    return PROJECTS.find((p) => p.name.startsWith(n) || p.name.includes(n));
+    return PROJECTS.find((p) => p.slug.startsWith(n) || p.slug.includes(n));
   };
 
   const doCat = (arg?: string) => {
@@ -271,11 +175,11 @@ import Base from '../layouts/Base.astro';
     if (!p) {
       printErr(`cat: ${arg.replace(/^.*\//, '')}: No such project`);
       const near = closest(arg.replace(/^.*\//, ''));
-      if (near) printHint(`did you mean ${cmdLink(`cat ${near.name}`)}? run ${cmdLink('ls')} to see everything`);
+      if (near) printHint(`did you mean ${cmdLink(`cat ${near.slug}`)}? run ${cmdLink('ls')} to see everything`);
       else printHint(`run ${cmdLink('ls')} to see the available projects`);
       return;
     }
-    print(`<span class="dim">→ opening</span> <span class="p-path">${esc(p.name)}</span> <span class="dim">…</span>`);
+    print(`<span class="dim">→ opening</span> <span class="p-path">${esc(p.slug)}</span> <span class="dim">…</span>`);
     openModal(p);
   };
 
@@ -374,14 +278,14 @@ import Base from '../layouts/Base.astro';
   // ---------- popup ----------
 
   const openModal = (p: Project) => {
-    modalPath.textContent = `~/projects/${p.name}`;
+    modalPath.textContent = `~/projects/${p.slug}`;
     modalContent.innerHTML = `
       <h2 class="m-name">${esc(p.name)}</h2>
-      <p class="m-desc">${esc(p.desc)}</p>
-      <div class="m-tech">${p.tech.map((t) => `<span class="m-chip">${esc(t)}</span>`).join('')}</div>
+      <p class="m-desc">${esc(p.summary)}</p>
+      <div class="m-tech">${p.stack.map((t) => `<span class="m-chip">${esc(t)}</span>`).join('')}</div>
       <div class="m-links">
         <a class="m-btn" href="${esc(p.repo)}" target="_blank" rel="noopener">↗ GitHub repo</a>
-        ${p.live ? `<a class="m-btn m-btn-live" href="${esc(p.live)}" target="_blank" rel="noopener">↗ Live app</a>` : `<span class="m-offline">not deployed — lives in the repo</span>`}
+        ${p.site ? `<a class="m-btn m-btn-live" href="${esc(p.site)}" target="_blank" rel="noopener">↗ Live app</a>` : `<span class="m-offline">not deployed — lives in the repo</span>`}
       </div>`;
     modal.hidden = false;
     requestAnimationFrame(() => modal.classList.add('show'));
@@ -422,7 +326,7 @@ import Base from '../layouts/Base.astro';
     if (parts.length === 1) pool = COMMANDS;
     else if (parts[0] === 'cd') pool = cwd === '~' ? ['projects'] : ['..'];
     else if (parts[0] === 'cat' || parts[0] === 'open')
-      pool = cwd === '~/projects' ? PROJECTS.map((p) => p.name) : ['readme.txt', 'projects'];
+      pool = cwd === '~/projects' ? PROJECTS.map((p) => p.slug) : ['readme.txt', 'projects'];
     const hits = pool.filter((c) => c.startsWith(last.toLowerCase()));
     if (hits.length === 1) {
       parts[parts.length - 1] = hits[0];
