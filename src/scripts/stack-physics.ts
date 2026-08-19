@@ -22,10 +22,11 @@ export interface StationDef {
 
 const CHIP = 62; // icon card square, px
 const SLOT_W = CHIP + 14; // horizontal spacing between line slots
-const POP_MS = 140; // delay between pops in a burst
+const POP_MS = 60; // delay between pops in a burst
 const FLOAT_MS = 10_000; // how long each icon holds the line before falling
 const DROP_MARGIN = 30; // px around the folder that still counts as "home"
-const SPRING = 0.00004; // steering strength toward the line slot
+const SPRING = 0.0002; // steering strength toward the line slot
+const POP_AIM = 0.06; // launch speed as a fraction of the distance to the slot
 const FLOATING_GROUP = -1; // Matter group: same negative group = never collide
 const REBURST_COOLDOWN = 900; // ms after re-homing before hover can burst again
 
@@ -146,6 +147,8 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
 
     batch.forEach((item, i) => {
       window.setTimeout(() => {
+        const tx = startX + (i % perRow) * SLOT_W;
+        const ty = rowY + Math.floor(i / perRow) * rowStep;
         const el = makeChipEl(item);
         el.style.transform = `translate(${mx - CHIP / 2}px, ${my - CHIP / 2}px)`;
         root.appendChild(el);
@@ -160,7 +163,16 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
           // collisions still happen. Restored to 0 when the chip falls.
           collisionFilter: { group: FLOATING_GROUP, category: 1, mask: 0xffffffff },
         });
-        Matter.Body.setVelocity(body, { x: 2, y: -5 });
+        // launch it AT its slot rather than nudging it and waiting for the
+        // spring to drag it there — that slow drift is what read as laggy
+        const ax = tx - mx;
+        const ay = ty - my;
+        const dist = Math.hypot(ax, ay) || 1;
+        const speed = dist * POP_AIM;
+        Matter.Body.setVelocity(body, {
+          x: (ax / dist) * speed,
+          y: (ay / dist) * speed - 3, // a little lift so it clears the folder
+        });
         Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1);
         Matter.World.add(world, body);
         chips.add({
@@ -169,10 +181,7 @@ export function initStackPhysics(root: HTMLElement, stations: StationDef[]): voi
           station: st,
           floatUntil: performance.now() + FLOAT_MS,
           phase: Math.random() * Math.PI * 2,
-          target: {
-            x: startX + (i % perRow) * SLOT_W,
-            y: rowY + Math.floor(i / perRow) * rowStep,
-          },
+          target: { x: tx, y: ty },
         });
       }, i * POP_MS);
     });
