@@ -180,7 +180,7 @@ import Base from '../layouts/Base.astro';
       return;
     }
     print(`<span class="dim">→ opening</span> <span class="p-path">${esc(p.slug)}</span> <span class="dim">…</span>`);
-    openModal(p);
+    setTimeout(() => { window.location.href = `/work/${p.slug}`; }, 260);
   };
 
   const doHelp = () => {
