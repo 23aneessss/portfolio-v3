@@ -24,7 +24,16 @@ const next = PROJECTS[(idx + 1) % PROJECTS.length];
       <div class="body">
         <header class="head">
           <div class="ident">
-            {p.logo && <img class="logo" src={p.logo} alt={`${p.name} icon`} width="76" height="76" />}
+            {p.logo && (
+              <img
+                class="logo"
+                src={p.logo}
+                alt={`${p.name} icon`}
+                width="76"
+                height="76"
+                style={p.logoBg ? `background:${p.logoBg};padding:9px` : undefined}
+              />
+            )}
             <div>
               <h1>{p.name}</h1>
               <p class="tagline">{p.tagline}</p>

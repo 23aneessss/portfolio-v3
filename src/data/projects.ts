@@ -28,6 +28,8 @@ export interface Project {
   /** app icon lifted from the project's own repo — absent when the project
    *  has none of its own (a library, a scaffold, or a default framework icon) */
   logo?: string;
+  /** backing colour for logos drawn in white — they vanish on the light page */
+  logoBg?: string;
   /** projects that own a real product site */
   site?: string;
   download?: string;
@@ -62,6 +64,8 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'doctorcom',
+    logo: '/logos/doctorcom.png',
+    logoBg: '#12283d',
     name: 'doctor.com',
     tagline: 'A medical practice workspace — web console and doctor’s phone app.',
     summary:
