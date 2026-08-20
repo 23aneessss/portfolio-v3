@@ -104,6 +104,12 @@ const lastEdited = `${now.getUTCDate()} ${months[now.getUTCMonth()]} ${now.getUT
 
       <!-- ─── Extracurricular ─── -->
       <h3 id="extracurricular" class="subhead">Extracurricular involvement</h3>
+      <figure class="thumb">
+        <img src="/etic-logo.png" alt="Logo of the ETIC Club, ESI Algiers" width="512" height="512" loading="lazy" />
+        <figcaption>
+          The <a>ETIC Club</a> logo. Aness has presided over the club since August 2026.
+        </figcaption>
+      </figure>
       <p>
         Aness joined the <a>ETIC Club</a>, ESI Algiers's student-run tech association, in 2024, and has served as
         its <strong>president</strong> since August 2026 — moving from building and shipping with the club to
@@ -440,6 +446,28 @@ const lastEdited = `${now.getUTCDate()} ${months[now.getUTCMonth()]} ${now.getUT
     font-size: 12px;
     border-bottom: 1px solid #c8ccd1;
   }
+  /* right-floated image box, the way article thumbnails sit on Wikipedia */
+  .thumb {
+    float: right;
+    width: 180px;
+    margin: 4px 0 12px 20px;
+    padding: 4px;
+    border: 1px solid #c8ccd1;
+    background: #f8f9fa;
+  }
+  .thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #fff;
+  }
+  .thumb figcaption {
+    padding: 6px 2px 2px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #54595d;
+  }
+
   .ib-since {
     color: #72777d;
     font-size: 0.92em;
@@ -630,6 +658,12 @@ const lastEdited = `${now.getUTCDate()} ${months[now.getUTCMonth()]} ${now.getUT
 
   /* mobile: infobox goes below, type stays readable */
   @media (max-width: 760px) {
+    /* a floated thumbnail shreds a narrow text column */
+    .thumb {
+      float: none;
+      margin: 12px auto 18px;
+    }
+
     .header { padding: 22px 24px 0; }
     .stage { padding: 16px 10px 24px; }
     .wiki { padding: 14px 18px 18px; font-size: 15px; }
