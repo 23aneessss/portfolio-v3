@@ -25,6 +25,9 @@ export interface Project {
   status: Status;
   year: string;
   repo: string;
+  /** app icon lifted from the project's own repo — absent when the project
+   *  has none of its own (a library, a scaffold, or a default framework icon) */
+  logo?: string;
   /** projects that own a real product site */
   site?: string;
   download?: string;
@@ -37,6 +40,7 @@ const GH = 'https://github.com/23aneessss';
 export const PROJECTS: Project[] = [
   {
     slug: 'orbit-desktop',
+    logo: '/logos/orbit-desktop.png',
     name: 'Orbit',
     tagline: 'A private, local-first personal OS for macOS.',
     summary:
@@ -58,6 +62,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'jo3t',
+    logo: '/logos/jo3t.png',
     name: 'JO3T',
     tagline: 'Find places worth eating at in Algeria, ranked by people who actually ate there.',
     summary:
@@ -96,6 +101,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'appxray',
+    logo: '/logos/appxray.png',
     name: 'App X-Ray',
     tagline: 'See what a Mac app can really do — read from the binary, not the marketing.',
     summary:
@@ -115,6 +121,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'focusnotch',
+    logo: '/logos/focusnotch.png',
     name: 'FocusNotch',
     tagline: "Make your MacBook's notch useful — a Pomodoro timer that lives in it.",
     summary:
@@ -134,6 +141,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'sequence',
+    logo: '/logos/sequence.png',
     name: 'Sequence',
     tagline: 'Track habits the way GitHub tracks code.',
     summary:
@@ -153,6 +161,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'ba33',
+    logo: '/logos/ba33.png',
     name: 'BA33',
     tagline: "Algeria's wool traceability platform — from shepherd to certified product.",
     summary:
@@ -172,6 +181,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'port-flow',
+    logo: '/logos/port-flow.png',
     name: 'Port Flow',
     tagline: 'Role-based slot booking for port terminals.',
     summary:
@@ -191,6 +201,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'movio',
+    logo: '/logos/movio.png',
     name: 'Movio',
     tagline: 'Discover movies, save them, and track what you have watched.',
     summary:
