@@ -85,6 +85,13 @@ const lastEdited = `${now.getUTCDate()} ${months[now.getUTCMonth()]} ${now.getUT
         <span class="edit" data-edit="education" title="You don't have permission to edit this">[edit]</span>
         Early life and education
       </h2>
+      <figure class="thumb">
+        <img src="/esi-logo.png" alt="Logo of the Higher School of Computer Science, ESI Algiers" width="300" height="224" loading="lazy" />
+        <figcaption>
+          <a href="https://esi.dz" target="_blank" rel="noopener">ESI Algiers</a>, where Aness has studied computer
+          science since 2024.
+        </figcaption>
+      </figure>
       <p>
         Aness is from <a>Algiers</a>, where he was born and raised. He completed a first
         <a>baccalauréat</a> in 2023 and spent the 2023–2024 academic year at the
@@ -449,6 +456,7 @@ const lastEdited = `${now.getUTCDate()} ${months[now.getUTCMonth()]} ${now.getUT
   /* right-floated image box, the way article thumbnails sit on Wikipedia */
   .thumb {
     float: right;
+    clear: right; /* keeps the ESI and ETIC boxes stacked, never overlapping */
     width: 180px;
     margin: 4px 0 12px 20px;
     padding: 4px;
