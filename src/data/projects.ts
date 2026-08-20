@@ -85,10 +85,10 @@ export const PROJECTS: Project[] = [
     name: 'JO3T',
     tagline: 'Where to eat in Algeria, ranked by people who actually ate there.',
     summary:
-      'Restaurant discovery built for the 48 wilayas rather than adapted from somewhere else. Reviews come with photos, places can be added by anyone, and a leaderboard keeps the people who contribute visible.',
+      'Restaurant discovery built for Algeria rather than adapted from somewhere else, with every province carried in both French and Arabic. Reviews come with photos, places can be added by anyone, and a leaderboard keeps the people who contribute visible.',
     built: [
       'Fourteen feature modules, among them discovery, map, venue pages, reviews, saved places, events and notifications',
-      'Wilaya-first browsing: shortcuts for all 48 provinces alongside a For You feed and a daily featured pick',
+      'Wilaya-first browsing over twelve provinces, each carrying its French and Arabic name, alongside a For You feed and a daily featured pick',
       'Community submission flow so a missing place can be added from the app, and a contributor leaderboard',
       'A Following tab surfacing what people you follow have reviewed',
       'Ships with in-memory sample data, so every screen is reachable without a backend or an API key',
@@ -125,13 +125,13 @@ export const PROJECTS: Project[] = [
     name: 'BA33',
     tagline: 'Every kilogram of Algerian wool, traced from shepherd to certified product.',
     summary:
-      'Built at a hackathon and sized like it was not: one backend serving 137 endpoints and six client applications, following wool through collection, washing and transformation. Field workers use it offline, in places where signal is optional.',
+      'Built at a hackathon and sized like it was not: one backend serving close to 140 endpoints and six client applications, following wool through collection, washing and transformation. Field workers use it offline, in places where signal is optional.',
     built: [
       'Six clients from one codebase: shepherd and collector phone apps, plus operations, buyer and institutional web portals',
       'An event-log data model that keeps each batch traceable across every hand it passes through',
       'An offline sync package for the field apps, since collection points rarely have coverage',
       'Background job processing through BullMQ and Redis for the heavier pipeline steps',
-      '137 documented endpoints and a 55-step end-to-end pipeline test that runs green',
+      'Close to 140 REST endpoints behind Swagger, and a 420-line script that walks the whole pipeline end to end',
     ],
     stack: ['NestJS', 'PostgreSQL', 'Redis', 'BullMQ', 'Flutter', 'Riverpod', 'Melos'],
     status: 'prototype',
