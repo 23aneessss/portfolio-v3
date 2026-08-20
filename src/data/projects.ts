@@ -184,7 +184,7 @@ export const PROJECTS: Project[] = [
     name: 'Sequence',
     tagline: 'Habits tracked the way GitHub tracks commits.',
     summary:
-      'One square per day, filling in as you show up. Over months the grid becomes an honest picture of consistency — nothing to fake, nothing to game. Local-first, no account, no server.',
+      'One square per day, filling in as you show up. Over months the grid becomes an honest picture of consistency — nothing to fake, nothing to game. Everything lives on the phone.',
     built: [
       'A week-aligned contribution graph per habit with five intensity levels, and a second graph for daily tasks',
       'Three kinds of habit — yes/no, counted, and timed with a built-in stopwatch',
